@@ -1,4 +1,4 @@
-const API_BASE_URL = localStorage.getItem('API_BASE_URL') || 'https://cefiret-api-production.up.railway.app/';
+const API_BASE_URL = localStorage.getItem('API_BASE_URL') || 'https://cefiret-api-production.up.railway.app';
 
 const ROUTES = {
   login: '/views/auth/login.html',
