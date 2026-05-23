@@ -8,6 +8,5 @@ const ROUTES = {
   expedientesBuscar: '/views/expedientes/buscar.html',
   rutinas: '/views/rutinas/index.html',
   citas: '/views/citas/index.html',
-  progreso: '/views/progreso/index.html',
-  videos: '/views/videos/index.html'
+  progreso: '/views/progreso/index.html'
 };

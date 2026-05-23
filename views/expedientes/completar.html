@@ -1,1 +1,168 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Expediente Clínico - CEFIRET</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"><link rel="stylesheet" href="../../css/app.css"></head><body><div id="appNavbar"></div><div class="container"><main class="main-content"><div class="container"><div id="alertBox"></div><div class="card shadow"><div class="card-header bg-primary text-white"><h4 class="mb-0">Expediente clinico</h4><p class="mb-0 mt-2" id="pacienteNombre"></p></div><div class="card-body"><form id="expedienteForm"><div class="section-header bg-info text-white p-3 mb-4 rounded"><h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Datos Generales</h5></div><div class="row"><div class="col-md-6 mb-3"><label class="form-label">Fecha de Creación *</label><input type="date" name="fecha_creacion" class="form-control" required></div><div class="col-md-6 mb-3"><label class="form-label">Sexo *</label><select name="sexo" class="form-select" required><option value="">Seleccionar</option><option>Masculino</option><option>Femenino</option><option>Otro</option></select></div></div><div class="row"><div class="col-md-3 mb-3"><label>Edad *</label><input type="number" name="edad" class="form-control" required></div><div class="col-md-3 mb-3"><label>Estado Civil *</label><select name="edo_civil" class="form-select" required><option value="">Seleccionar</option><option>Soltero</option><option>Casado</option><option>Divorciado</option><option>Viudo</option><option>Unión libre</option></select></div><div class="col-md-6 mb-3"><label>Ocupación *</label><input type="text" name="ocupacion" class="form-control" required></div></div><div class="row"><div class="col-md-6 mb-3"><label>Domicilio *</label><input name="domicilio" class="form-control" required></div><div class="col-md-6 mb-3"><label>Colonia *</label><input name="colonia" class="form-control" required></div></div><div class="row"><div class="col-md-6 mb-3"><label>Municipio *</label><input name="municipio" class="form-control" required></div><div class="col-md-6 mb-3"><label>Lugar de Nacimiento *</label><input name="lugar_nac" class="form-control" required></div></div><div class="row"><div class="col-md-6 mb-3"><label>Lugar de Residencia *</label><input name="lugar_residencia" class="form-control" required></div><div class="col-md-6 mb-3"><label>Contacto de Emergencia *</label><input name="contacto_emergencia" class="form-control" required></div></div><div class="row"><div class="col-md-6 mb-3"><label>Nacionalidad *</label><input name="nacionalidad" class="form-control" required value="Mexicana"></div><div class="col-md-3 mb-3"><label>Religión</label><input name="religion" class="form-control"></div><div class="col-md-3 mb-3"><label>Escolaridad</label><select name="escolaridad" class="form-select"><option value="">Seleccionar</option><option>Primaria</option><option>Secundaria</option><option>Preparatoria</option><option>Universidad</option><option>Posgrado</option></select></div></div><div class="section-header bg-success text-white p-3 mb-4 rounded mt-4"><h5 class="mb-0">Signos Vitales</h5></div><div class="row"><div class="col-md-3 mb-3"><label>Presión Arterial</label><input name="presion_arterial" class="form-control"></div><div class="col-md-3 mb-3"><label>Frecuencia Cardíaca</label><input name="frec_cardiaca" class="form-control"></div><div class="col-md-3 mb-3"><label>Llenado Capilar</label><input name="llenado_capilar" class="form-control"></div><div class="col-md-3 mb-3"><label>Glucosa</label><input name="glucosa" class="form-control"></div></div><div class="row"><div class="col-md-6 mb-3"><label>Frecuencia Respiratoria</label><input name="frec_respiratoria" class="form-control"></div><div class="col-md-6 mb-3"><label>Alimentación</label><input name="alimentacion" class="form-control"></div></div><div class="section-header bg-warning text-white p-3 mb-4 rounded mt-4"><h5 class="mb-0">Hábitos Higiénicos</h5></div><div class="row"><div class="col-md-4 mb-3"><label>Baño</label><input name="bano" class="form-control"></div><div class="col-md-4 mb-3"><label>Lavado de Manos</label><input name="lavado_manos" class="form-control"></div><div class="col-md-4 mb-3"><label>Lavado de Dientes</label><input name="lavado_dientes" class="form-control"></div></div><div class="row"><div class="col-md-4 mb-3"><label>Cambio de Ropa</label><input name="cambio_ropa" class="form-control"></div><div class="col-md-4 mb-3"><label>Revisión de Pies</label><input name="revision_pies" class="form-control"></div><div class="col-md-4 mb-3"><label>Horas de Sueño</label><input name="horas_sueno" class="form-control"></div></div><div class="section-header bg-secondary text-white p-3 mb-4 rounded mt-4"><h5 class="mb-0">Vivienda</h5></div><div class="mb-3"><label>Detalles de Vivienda</label><input name="vivienda_detalles" class="form-control"></div><div class="row"><div class="col-md-3 mb-3"><label>Techo</label><input name="techo" class="form-control"></div><div class="col-md-3 mb-3"><label>Paredes</label><input name="paredes" class="form-control"></div><div class="col-md-3 mb-3"><label>Suelo</label><input name="suelo" class="form-control"></div><div class="col-md-3 mb-3"><label>Agua</label><input name="agua" class="form-control"></div></div><div class="row"><div class="col-md-3 mb-3"><label>Luz</label><input name="luz" class="form-control"></div><div class="col-md-3 mb-3"><label>Drenaje</label><input name="drenaje" class="form-control"></div><div class="col-md-3 mb-3"><label>Gas</label><input name="gas" class="form-control"></div><div class="col-md-3 mb-3"><label>Limpieza del Hogar</label><input name="limpieza_hogar" class="form-control"></div></div><div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5"><a href="../usuarios/crear.html" class="btn btn-secondary me-md-2">Cancelar</a><button type="submit" class="btn btn-success">Guardar Expediente Completo</button></div></form></div></div></div></main></div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="../../js/config.js"></script><script src="../../js/api.js"></script><script src="../../js/layout.js"></script><script>requireAuth();renderNavbar('expedientes');</script><script>const id=getParam('id');document.querySelector('[name=fecha_creacion]').value=new Date().toISOString().slice(0,10);(async()=>{try{const d=await apiFetch(`/api/usuarios/${id}`);const p=d.usuario;pacienteNombre.innerHTML=`<strong>Paciente:</strong> ${escapeHtml(p.nombre)} ${escapeHtml(p.apaterno)} ${escapeHtml(p.amaterno)}`}catch(e){}})();expedienteForm.addEventListener('submit',async e=>{e.preventDefault();try{const d=await apiFetch(`/api/expedientes/pacientes/${id}`,{method:'POST',body:JSON.stringify(formToObject(expedienteForm))});showAlert('alertBox','success',d.message||'Expediente guardado');setTimeout(()=>location.href=`ver.html?id=${id}`,900)}catch(err){showAlert('alertBox','danger',err.message||'Error al guardar expediente')}})</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expediente Clínico - CEFIRET</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../css/app.css">
+</head>
+
+<body>
+    <div id="appNavbar"></div>
+    <div class="container">
+        <main class="main-content">
+            <div class="container">
+                <div id="alertBox"></div>
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Expediente clinico</h4>
+                        <p class="mb-0 mt-2" id="pacienteNombre"></p>
+                    </div>
+                    <div class="card-body">
+                        <form id="expedienteForm">
+                            <div class="section-header bg-info text-white p-3 mb-4 rounded">
+                                <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Datos Generales</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label">Fecha de Creación *</label><input
+                                        type="date" name="fecha_creacion" class="form-control" required></div>
+                                <div class="col-md-6 mb-3"><label class="form-label">Sexo *</label><select name="sexo"
+                                        class="form-select" required>
+                                        <option value="">Seleccionar</option>
+                                        <option>Masculino</option>
+                                        <option>Femenino</option>
+                                        <option>Otro</option>
+                                    </select></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 mb-3"><label>Edad *</label><input type="number" name="edad"
+                                        class="form-control" required></div>
+                                <div class="col-md-3 mb-3"><label>Estado Civil *</label><select name="edo_civil"
+                                        class="form-select" required>
+                                        <option value="">Seleccionar</option>
+                                        <option>Soltero</option>
+                                        <option>Casado</option>
+                                        <option>Divorciado</option>
+                                        <option>Viudo</option>
+                                        <option>Unión libre</option>
+                                    </select></div>
+                                <div class="col-md-6 mb-3"><label>Ocupación *</label><input type="text" name="ocupacion"
+                                        class="form-control" required></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label>Domicilio *</label><input name="domicilio"
+                                        class="form-control" required></div>
+                                <div class="col-md-6 mb-3"><label>Colonia *</label><input name="colonia"
+                                        class="form-control" required></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label>Municipio *</label><input name="municipio"
+                                        class="form-control" required></div>
+                                <div class="col-md-6 mb-3"><label>Lugar de Nacimiento *</label><input name="lugar_nac"
+                                        class="form-control" required></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label>Lugar de Residencia *</label><input
+                                        name="lugar_residencia" class="form-control" required></div>
+                                <div class="col-md-6 mb-3"><label>Contacto de Emergencia *</label><input
+                                        name="contacto_emergencia" class="form-control" required></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label>Nacionalidad *</label><input name="nacionalidad"
+                                        class="form-control" required value="Mexicana"></div>
+                                <div class="col-md-3 mb-3"><label>Religión</label><input name="religion"
+                                        class="form-control"></div>
+                                <div class="col-md-3 mb-3"><label>Escolaridad</label><select name="escolaridad"
+                                        class="form-select">
+                                        <option value="">Seleccionar</option>
+                                        <option>Primaria</option>
+                                        <option>Secundaria</option>
+                                        <option>Preparatoria</option>
+                                        <option>Universidad</option>
+                                        <option>Posgrado</option>
+                                    </select></div>
+                            </div>
+                            <div class="section-header bg-success text-white p-3 mb-4 rounded mt-4">
+                                <h5 class="mb-0">Signos Vitales</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 mb-3"><label>Presión Arterial</label><input name="presion_arterial"
+                                        class="form-control"></div>
+                                <div class="col-md-3 mb-3"><label>Frecuencia Cardíaca</label><input name="frec_cardiaca"
+                                        class="form-control"></div>
+                                <div class="col-md-3 mb-3"><label>Llenado Capilar</label><input name="llenado_capilar"
+                                        class="form-control"></div>
+                                <div class="col-md-3 mb-3"><label>Glucosa</label><input name="glucosa"
+                                        class="form-control"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label>Frecuencia Respiratoria</label><input
+                                        name="frec_respiratoria" class="form-control"></div>
+                                <div class="col-md-6 mb-3"><label>Alimentación</label><input name="alimentacion"
+                                        class="form-control"></div>
+                            </div>
+                            <div class="section-header bg-warning text-white p-3 mb-4 rounded mt-4">
+                                <h5 class="mb-0">Hábitos Higiénicos</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3"><label>Baño</label><input name="bano" class="form-control">
+                                </div>
+                                <div class="col-md-4 mb-3"><label>Lavado de Manos</label><input name="lavado_manos"
+                                        class="form-control"></div>
+                                <div class="col-md-4 mb-3"><label>Lavado de Dientes</label><input name="lavado_dientes"
+                                        class="form-control"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3"><label>Cambio de Ropa</label><input name="cambio_ropa"
+                                        class="form-control"></div>
+                                <div class="col-md-4 mb-3"><label>Revisión de Pies</label><input name="revision_pies"
+                                        class="form-control"></div>
+                                <div class="col-md-4 mb-3"><label>Horas de Sueño</label><input name="horas_sueno"
+                                        class="form-control"></div>
+                            </div>
+                            <div class="section-header bg-secondary text-white p-3 mb-4 rounded mt-4">
+                                <h5 class="mb-0">Vivienda</h5>
+                            </div>
+                            <div class="mb-3"><label>Detalles de Vivienda</label><input name="vivienda_detalles"
+                                    class="form-control"></div>
+                            <div class="row">
+                                <div class="col-md-3 mb-3"><label>Techo</label><input name="techo" class="form-control">
+                                </div>
+                                <div class="col-md-3 mb-3"><label>Paredes</label><input name="paredes"
+                                        class="form-control"></div>
+                                <div class="col-md-3 mb-3"><label>Suelo</label><input name="suelo" class="form-control">
+                                </div>
+                                <div class="col-md-3 mb-3"><label>Agua</label><input name="agua" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 mb-3"><label>Luz</label><input name="luz" class="form-control">
+                                </div>
+                                <div class="col-md-3 mb-3"><label>Drenaje</label><input name="drenaje"
+                                        class="form-control"></div>
+                                <div class="col-md-3 mb-3"><label>Gas</label><input name="gas" class="form-control">
+                                </div>
+                                <div class="col-md-3 mb-3"><label>Limpieza del Hogar</label><input name="limpieza_hogar"
+                                        class="form-control"></div>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5"><a
+                                    href="../usuarios/crear.html" class="btn btn-secondary me-md-2">Cancelar</a><button
+                                    type="submit" class="btn btn-success">Guardar Expediente Completo</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/layout.js"></script>
+    <script>requireAuth(); renderNavbar('expedientes');</script>
+    <script>const id = getParam('id'); document.querySelector('[name=fecha_creacion]').value = new Date().toISOString().slice(0, 10); (async () => { try { const d = await apiFetch(`/api/usuarios/${id}`); const p = d.usuario; pacienteNombre.innerHTML = `<strong>Paciente:</strong> ${escapeHtml(p.nombre)} ${escapeHtml(p.apaterno)} ${escapeHtml(p.amaterno)}` } catch (e) { } })(); expedienteForm.addEventListener('submit', async e => { e.preventDefault(); try { const d = await apiFetch(`/api/expedientes/pacientes/${id}`, { method: 'POST', body: JSON.stringify(formToObject(expedienteForm)) }); showAlert('alertBox', 'success', d.message || 'Expediente guardado'); setTimeout(() => location.href = `ver.html?id=${id}`, 900) } catch (err) { showAlert('alertBox', 'danger', err.message || 'Error al guardar expediente') } })</script>
+</body>
+
+</html>
