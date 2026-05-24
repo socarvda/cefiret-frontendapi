@@ -68,12 +68,6 @@ function renderNavbar(active = "") {
                     Citas
                   </a>
                 </li>
-
-                <li>
-                  <a class="dropdown-item" href="../progreso/index.html">
-                    Progreso
-                  </a>
-                </li>
               </ul>
             </li>
           </ul>
