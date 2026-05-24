@@ -91,6 +91,13 @@
         requireAuth();
         renderNavbar('citas');
 
+        const updated = getParam('updated');
+
+        if (updated === '1') {
+            showAlert('alertBox', 'success', 'Cita actualizada correctamente.');
+            window.history.replaceState({}, document.title, 'index.html');
+        }
+
         function g(path) {
             return `${API_BASE_URL}${path}`;
         }
@@ -148,9 +155,8 @@
                 const d = await apiFetch('/api/citas');
 
                 googleActions.innerHTML = `
-                    ${
-                        d.google_connected
-                            ? `
+                    ${d.google_connected
+                        ? `
                                 <span class="gcal-badge connected">Google Calendar conectado</span>
                                 <a href="${googleCalendarDefaultUrl()}" target="_blank" class="btn btn-sm btn-outline-primary">
                                     Abrir Google Calendar
@@ -159,7 +165,7 @@
                                     Desconectar
                                 </a>
                             `
-                            : `
+                        : `
                                 <span class="gcal-badge disconnected">Google Calendar desconectado</span>
                                 <a href="${g('/google/calendar/connect')}" class="btn btn-sm btn-primary">
                                     Conectar Google
@@ -196,21 +202,19 @@
                             <td>${escapeHtml(c.motivo || '—')}</td>
 
                             <td>
-                                <span class="badge rounded-pill bg-${
-                                    c.estatus === 'cancelada'
-                                        ? 'danger'
-                                        : (c.estatus === 'completada' ? 'success' : 'primary')
-                                }">
+                                <span class="badge rounded-pill bg-${c.estatus === 'cancelada'
+                            ? 'danger'
+                            : (c.estatus === 'completada' ? 'success' : 'primary')
+                        }">
                                     ${escapeHtml(c.estatus || 'programada')}
                                 </span>
                             </td>
 
                             <td>
-                                ${
-                                    c.google_event_id
-                                        ? '<span class="badge bg-success">Sincronizada</span>'
-                                        : '<span class="badge bg-secondary">Solo sistema</span>'
-                                }
+                                ${c.google_event_id
+                            ? '<span class="badge bg-success">Sincronizada</span>'
+                            : '<span class="badge bg-secondary">Solo sistema</span>'
+                        }
                             </td>
 
                             <td>
@@ -223,11 +227,10 @@
                                         Editar
                                     </a>
 
-                                    ${
-                                        c.estatus !== 'cancelada'
-                                            ? `<button class="btn btn-sm btn-outline-secondary" onclick="cancelar(${c.id_cita})">Cancelar</button>`
-                                            : ''
-                                    }
+                                    ${c.estatus !== 'cancelada'
+                            ? `<button class="btn btn-sm btn-outline-secondary" onclick="cancelar(${c.id_cita})">Cancelar</button>`
+                            : ''
+                        }
 
                                     <button class="btn btn-sm btn-outline-danger" onclick="eliminar(${c.id_cita})">
                                         Eliminar
