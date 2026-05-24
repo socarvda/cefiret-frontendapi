@@ -146,10 +146,9 @@ function renderNavbar(active = "") {
         console.warn("No se pudo cerrar sesión en el servidor:", error);
       }
 
-      localStorage.removeItem("api_token");
-      localStorage.removeItem("auth_user");
+      clearSession();
 
-      window.location.href = ROUTES.login;
+      window.location.href = ROUTES?.login || "../auth/login.html";
     });
   }
 
@@ -282,65 +281,4 @@ function formatDateTime(value) {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
-
-function requireAuth() {
-  const token = localStorage.getItem("api_token");
-
-  if (!token) {
-    window.location.href = ROUTES.login;
-  }
-}
-
-function getToken() {
-  return localStorage.getItem("api_token");
-}
-
-function getUser() {
-  const raw = localStorage.getItem("auth_user");
-
-  if (!raw) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    return null;
-  }
-}
-
-function getParam(name) {
-  return new URLSearchParams(window.location.search).get(name);
-}
-
-function escapeHtml(value) {
-  if (value === null || value === undefined) {
-    return "";
-  }
-
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function formatDate(value) {
-  if (!value) {
-    return "—";
-  }
-
-  const date = new Date(String(value).slice(0, 10) + "T00:00:00");
-
-  return isNaN(date) ? value : date.toLocaleDateString("es-MX");
-}
-
-function formatTime(value) {
-  return value ? String(value).substring(0, 5) : "—";
-}
-
-function formToObject(form) {
-  return Object.fromEntries(new FormData(form).entries());
 }
