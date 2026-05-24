@@ -8,30 +8,23 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/app.css">
 
     <style>
-        #calendar {
-            background: #fff;
-            padding: 18px;
-            border-radius: 14px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
-            min-height: 650px;
-        }
-
         .calendar-frame {
             width: 100%;
-            height: 650px;
+            height: 680px;
             border: 0;
             border-radius: 14px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
             background: #fff;
         }
 
-        .view-switch-btn.active {
-            background: #0d6efd;
-            color: #fff;
+        .calendar-placeholder {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            padding: 2rem;
         }
     </style>
 </head>
@@ -47,7 +40,9 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
                     <div>
                         <h2 class="mb-0 fw-bold" style="color:#1e3a5f">Gestión de Citas</h2>
-                        <p class="text-muted mb-0">Calendario y listado de citas programadas.</p>
+                        <p class="text-muted mb-0">
+                            Calendario de Google y listado de citas programadas.
+                        </p>
                     </div>
 
                     <div class="d-flex gap-2 flex-wrap align-items-center" id="googleActions"></div>
@@ -55,32 +50,17 @@
 
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body">
-                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                            <div>
-                                <h5 class="mb-1">Calendario de citas</h5>
-                                <p class="text-muted mb-0">
-                                    Aquí se muestran las citas registradas en el sistema. Si Google Calendar está conectado, también se sincronizan con tu cuenta.
-                                </p>
-                            </div>
-
-                            <div class="btn-group">
-                                <button id="btnSistema" class="btn btn-outline-primary view-switch-btn active" type="button">
-                                    Calendario del sistema
-                                </button>
-                                <button id="btnGoogle" class="btn btn-outline-primary view-switch-btn" type="button">
-                                    Google Calendar
-                                </button>
-                            </div>
-                        </div>
+                        <h5 class="mb-1">Calendario de Google</h5>
+                        <p class="text-muted mb-0">
+                            Aquí se muestra el calendario conectado. Las citas nuevas se guardan en el sistema y se intentan sincronizar con Google Calendar.
+                        </p>
                     </div>
                 </div>
 
-                <div id="calendarSystemBox" class="mb-4">
-                    <div id="calendar"></div>
-                </div>
-
-                <div id="calendarGoogleBox" class="mb-4" style="display:none">
-                    <div id="googleCalendarContainer"></div>
+                <div class="mb-4" id="googleCalendarContainer">
+                    <div class="calendar-placeholder">
+                        <p class="text-muted mb-0">Cargando calendario...</p>
+                    </div>
                 </div>
 
                 <div class="citas-table-card">
@@ -111,7 +91,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 
     <script src="../../js/config.js"></script>
     <script src="../../js/api.js"></script>
@@ -121,9 +100,6 @@
         requireAuth();
         renderNavbar('citas');
 
-        let calendar = null;
-        let lastCalendarEmbedUrl = '';
-
         function g(path) {
             return `${API_BASE_URL}${path}`;
         }
@@ -132,19 +108,37 @@
             return 'https://calendar.google.com/calendar/u/0/r';
         }
 
-        function renderCalendarEmbed(embedUrl) {
+        function renderGoogleCalendar(embedUrl, googleConnected) {
             const container = document.getElementById('googleCalendarContainer');
+
+            if (!googleConnected) {
+                container.innerHTML = `
+                    <div class="calendar-placeholder">
+                        <div class="alert alert-warning mb-3">
+                            <strong>Google Calendar no está conectado.</strong><br>
+                            Conecta una cuenta de Google para sincronizar y visualizar el calendario.
+                        </div>
+
+                        <a href="${g('/google/calendar/connect')}" class="btn btn-primary">
+                            Conectar Google Calendar
+                        </a>
+                    </div>
+                `;
+                return;
+            }
 
             if (!embedUrl) {
                 container.innerHTML = `
-                    <div class="alert alert-warning">
-                        <strong>No hay URL embebida configurada.</strong><br>
-                        Puedes abrir Google Calendar con el botón superior, pero si quieres verlo dentro de esta página,
-                        agrega la variable <code>GOOGLE_CALENDAR_EMBED_URL</code> en Railway.
+                    <div class="calendar-placeholder">
+                        <div class="alert alert-warning mb-3">
+                            <strong>No hay URL embebida configurada.</strong><br>
+                            Agrega la variable <code>GOOGLE_CALENDAR_EMBED_URL</code> en Railway para mostrar el calendario dentro de esta página.
+                        </div>
+
+                        <a href="${googleCalendarDefaultUrl()}" target="_blank" class="btn btn-primary">
+                            Abrir Google Calendar
+                        </a>
                     </div>
-                    <a href="${googleCalendarDefaultUrl()}" target="_blank" class="btn btn-primary">
-                        Abrir Google Calendar
-                    </a>
                 `;
                 return;
             }
@@ -158,86 +152,9 @@
             `;
         }
 
-        function switchCalendarView(type) {
-            const systemBox = document.getElementById('calendarSystemBox');
-            const googleBox = document.getElementById('calendarGoogleBox');
-            const btnSistema = document.getElementById('btnSistema');
-            const btnGoogle = document.getElementById('btnGoogle');
-
-            if (type === 'google') {
-                systemBox.style.display = 'none';
-                googleBox.style.display = 'block';
-
-                btnSistema.classList.remove('active');
-                btnGoogle.classList.add('active');
-
-                renderCalendarEmbed(lastCalendarEmbedUrl);
-            } else {
-                googleBox.style.display = 'none';
-                systemBox.style.display = 'block';
-
-                btnGoogle.classList.remove('active');
-                btnSistema.classList.add('active');
-
-                if (calendar) {
-                    setTimeout(() => calendar.updateSize(), 100);
-                }
-            }
-        }
-
-        function initCalendar() {
-            const calendarEl = document.getElementById('calendar');
-
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'es',
-                height: 650,
-                nowIndicator: true,
-                selectable: false,
-                editable: false,
-                eventDisplay: 'block',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                },
-                buttonText: {
-                    today: 'Hoy',
-                    month: 'Mes',
-                    week: 'Semana',
-                    day: 'Día',
-                    list: 'Lista'
-                },
-                events: async function (info, successCallback, failureCallback) {
-                    try {
-                        const events = await apiFetch('/api/citas/events');
-                        successCallback(events);
-                    } catch (error) {
-                        failureCallback(error);
-                    }
-                },
-                eventClick: function (info) {
-                    const id = info.event.id;
-                    if (id) {
-                        window.location.href = `detalles.html?id=${id}`;
-                    }
-                },
-                eventDidMount: function (info) {
-                    const motivo = info.event.extendedProps?.motivo || 'Sin motivo';
-                    const estatus = info.event.extendedProps?.estatus || 'programada';
-
-                    info.el.title = `${info.event.title}\nMotivo: ${motivo}\nEstatus: ${estatus}`;
-                }
-            });
-
-            calendar.render();
-        }
-
         async function cargar() {
             try {
                 const d = await apiFetch('/api/citas');
-
-                lastCalendarEmbedUrl = d.calendar_embed_url || '';
 
                 googleActions.innerHTML = `
                     ${
@@ -258,18 +175,35 @@
                                 </a>
                             `
                     }
-                    <a href="crear.html" class="btn btn-success">Nueva Cita</a>
+
+                    <a href="crear.html" class="btn btn-success">
+                        Nueva Cita
+                    </a>
                 `;
+
+                renderGoogleCalendar(d.calendar_embed_url || '', d.google_connected);
 
                 citasBody.innerHTML = (d.citas && d.citas.length)
                     ? d.citas.map(c => `
                         <tr class="${c.estatus === 'cancelada' ? 'table-secondary' : ''}">
                             <td><strong>#${c.id_cita}</strong></td>
-                            <td>${escapeHtml(c.paciente)} ${escapeHtml(c.paciente_apaterno || '')}</td>
-                            <td>${escapeHtml(c.fisio)} ${escapeHtml(c.fisio_apaterno || '')}</td>
+
+                            <td>
+                                ${escapeHtml(c.paciente)}
+                                ${escapeHtml(c.paciente_apaterno || '')}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(c.fisio)}
+                                ${escapeHtml(c.fisio_apaterno || '')}
+                            </td>
+
                             <td>${formatDate(c.fecha)}</td>
+
                             <td>${formatTime(c.hora)}</td>
+
                             <td>${escapeHtml(c.motivo || '—')}</td>
+
                             <td>
                                 <span class="badge rounded-pill bg-${
                                     c.estatus === 'cancelada'
@@ -279,6 +213,7 @@
                                     ${escapeHtml(c.estatus || 'programada')}
                                 </span>
                             </td>
+
                             <td>
                                 ${
                                     c.google_event_id
@@ -286,25 +221,37 @@
                                         : '<span class="badge bg-secondary">Solo sistema</span>'
                                 }
                             </td>
+
                             <td>
                                 <div class="d-flex gap-1 flex-wrap">
-                                    <a href="detalles.html?id=${c.id_cita}" class="btn btn-sm btn-outline-info">Ver</a>
-                                    <a href="editar.html?id=${c.id_cita}" class="btn btn-sm btn-outline-warning">Editar</a>
+                                    <a href="detalles.html?id=${c.id_cita}" class="btn btn-sm btn-outline-info">
+                                        Ver
+                                    </a>
+
+                                    <a href="editar.html?id=${c.id_cita}" class="btn btn-sm btn-outline-warning">
+                                        Editar
+                                    </a>
+
                                     ${
                                         c.estatus !== 'cancelada'
                                             ? `<button class="btn btn-sm btn-outline-secondary" onclick="cancelar(${c.id_cita})">Cancelar</button>`
                                             : ''
                                     }
-                                    <button class="btn btn-sm btn-outline-danger" onclick="eliminar(${c.id_cita})">Eliminar</button>
+
+                                    <button class="btn btn-sm btn-outline-danger" onclick="eliminar(${c.id_cita})">
+                                        Eliminar
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     `).join('')
-                    : '<tr><td colspan="9" class="text-center text-muted py-5">No hay citas registradas</td></tr>';
-
-                if (calendar) {
-                    calendar.refetchEvents();
-                }
+                    : `
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-5">
+                                No hay citas registradas
+                            </td>
+                        </tr>
+                    `;
             } catch (e) {
                 showAlert('alertBox', 'danger', e.message || 'Error al cargar citas');
             }
@@ -345,10 +292,6 @@
             }
         }
 
-        document.getElementById('btnSistema').addEventListener('click', () => switchCalendarView('sistema'));
-        document.getElementById('btnGoogle').addEventListener('click', () => switchCalendarView('google'));
-
-        initCalendar();
         cargar();
     </script>
 </body>
