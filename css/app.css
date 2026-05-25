@@ -317,3 +317,169 @@ body {
     text-decoration: none;
     margin-top: 8px
 }
+
+/* =========================================================
+   BOTONES GLOBALES CEFIRET
+   Esto rellena los botones para que no se vean solo con borde
+   ========================================================= */
+
+/* Botón principal */
+.btn-primary,
+.btn-outline-primary {
+    background-color: #0D5A8E !important;
+    border-color: #0D5A8E !important;
+    color: #FFFFFF !important;
+}
+
+.btn-primary:hover,
+.btn-outline-primary:hover {
+    background-color: #0A4770 !important;
+    border-color: #0A4770 !important;
+    color: #FFFFFF !important;
+}
+
+/* Botón éxito */
+.btn-success,
+.btn-outline-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #FFFFFF !important;
+}
+
+.btn-success:hover,
+.btn-outline-success:hover {
+    background-color: #146C43 !important;
+    border-color: #146C43 !important;
+    color: #FFFFFF !important;
+}
+
+/* Botón información */
+.btn-info,
+.btn-outline-info {
+    background-color: #0B6B75 !important;
+    border-color: #0B6B75 !important;
+    color: #FFFFFF !important;
+}
+
+.btn-info:hover,
+.btn-outline-info:hover {
+    background-color: #084F57 !important;
+    border-color: #084F57 !important;
+    color: #FFFFFF !important;
+}
+
+/* Botón advertencia / editar */
+.btn-warning,
+.btn-outline-warning {
+    background-color: #F2B705 !important;
+    border-color: #F2B705 !important;
+    color: #1A1A1A !important;
+}
+
+.btn-warning:hover,
+.btn-outline-warning:hover {
+    background-color: #D9A404 !important;
+    border-color: #D9A404 !important;
+    color: #1A1A1A !important;
+}
+
+/* Botón peligro / eliminar */
+.btn-danger,
+.btn-outline-danger {
+    background-color: #C0392B !important;
+    border-color: #C0392B !important;
+    color: #FFFFFF !important;
+}
+
+.btn-danger:hover,
+.btn-outline-danger:hover {
+    background-color: #A93226 !important;
+    border-color: #A93226 !important;
+    color: #FFFFFF !important;
+}
+
+/* Botón secundario / regresar / cancelar */
+.btn-secondary,
+.btn-outline-secondary {
+    background-color: #6C757D !important;
+    border-color: #6C757D !important;
+    color: #FFFFFF !important;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+    background-color: #5C636A !important;
+    border-color: #5C636A !important;
+    color: #FFFFFF !important;
+}
+
+/* Botones claros dentro de headers */
+.btn-light {
+    background-color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+    color: #0D5A8E !important;
+    font-weight: 600;
+}
+
+.btn-light:hover {
+    background-color: #E2EEF6 !important;
+    border-color: #E2EEF6 !important;
+    color: #0A4770 !important;
+}
+
+/* Botones deshabilitados */
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.75 !important;
+    cursor: not-allowed !important;
+}
+
+/* =========================================================
+   CAMPANITA DE NOTIFICACIONES
+   ========================================================= */
+
+.notification-btn,
+#notificationBtn,
+#notificacionesBtn,
+.navbar .btn-notification,
+.navbar button[title="Notificaciones"],
+.navbar a[title="Notificaciones"] {
+    background-color: #F2B705 !important;
+    border-color: #F2B705 !important;
+    color: #1A1A1A !important;
+}
+
+.notification-btn:hover,
+#notificationBtn:hover,
+#notificacionesBtn:hover,
+.navbar .btn-notification:hover,
+.navbar button[title="Notificaciones"]:hover,
+.navbar a[title="Notificaciones"]:hover {
+    background-color: #D9A404 !important;
+    border-color: #D9A404 !important;
+    color: #1A1A1A !important;
+}
+
+/* Si la campanita usa directamente el icono */
+.bi-bell,
+.bi-bell-fill {
+    color: #F2B705;
+}
+
+/* Cuando la campanita esté dentro de un botón amarillo, el icono se ve oscuro */
+.notification-btn .bi-bell,
+.notification-btn .bi-bell-fill,
+#notificationBtn .bi-bell,
+#notificationBtn .bi-bell-fill,
+#notificacionesBtn .bi-bell,
+#notificacionesBtn .bi-bell-fill {
+    color: #1A1A1A !important;
+}
+
+/* Badge de número de notificaciones */
+.notification-badge,
+#notificationBadge,
+#notificacionesBadge {
+    background-color: #C0392B !important;
+    color: #FFFFFF !important;
+}
