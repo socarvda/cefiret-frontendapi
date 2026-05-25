@@ -1,63 +1,63 @@
 function escapeHtml(value) {
-    if (value === null || value === undefined) return "";
+  if (value === null || value === undefined) return "";
 
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function getCurrentUserSafe() {
-    try {
-        if (typeof getUser === "function") {
-            return getUser();
-        }
-
-        return JSON.parse(localStorage.getItem("cefiret_user") || "null");
-    } catch (error) {
-        return null;
+  try {
+    if (typeof getUser === "function") {
+      return getUser();
     }
+
+    return JSON.parse(localStorage.getItem("cefiret_user") || "null");
+  } catch (error) {
+    return null;
+  }
 }
 
 function getUserName(user) {
-    if (!user) return "Usuario";
+  if (!user) return "Usuario";
 
-    return [
-        user.nombre || "",
-        user.apaterno || "",
-        user.amaterno || ""
-    ].join(" ").trim() || "Usuario";
+  return (
+    [user.nombre || "", user.apaterno || "", user.amaterno || ""]
+      .join(" ")
+      .trim() || "Usuario"
+  );
 }
 
 function isPaciente(user) {
-    return Number(user?.id_tipo_usuario || 0) === 3;
+  return Number(user?.id_tipo_usuario || 0) === 3;
 }
 
 function isAdminOFisio(user) {
-    const tipo = Number(user?.id_tipo_usuario || 0);
-    return tipo === 1 || tipo === 2;
+  const tipo = Number(user?.id_tipo_usuario || 0);
+  return tipo === 1 || tipo === 2;
 }
 
 function getHomeByRole(user) {
-    if (isPaciente(user)) {
-        return "../paciente/perfil.html";
-    }
+  if (isPaciente(user)) {
+    return "../paciente/perfil.html";
+  }
 
-    return "../dashboard/index.html";
+  return "../dashboard/index.html";
 }
 
 function renderNavbar(active = "") {
-    const nav = document.getElementById("appNavbar");
+  const nav = document.getElementById("appNavbar");
 
-    if (!nav) return;
+  if (!nav) return;
 
-    const user = getCurrentUserSafe();
-    const nombreUsuario = getUserName(user);
-    const homeUrl = getHomeByRole(user);
+  const user = getCurrentUserSafe();
+  const nombreUsuario = getUserName(user);
+  const homeUrl = getHomeByRole(user);
 
-    const pacienteMenu = `
+  const pacienteMenu = `
         <li class="nav-item">
             <a class="nav-link ${active === "mi-info" ? "active" : ""}" href="../paciente/perfil.html">
                 <i class="bi bi-person-circle"></i> Mi información
@@ -75,9 +75,15 @@ function renderNavbar(active = "") {
                 <i class="bi bi-calendar-event"></i> Mis citas
             </a>
         </li>
+
+        <li class="nav-item">
+    <a class="nav-link ${active === "pagos" ? "active" : ""}" href="../paciente/pagos.html">
+        <i class="bi bi-credit-card"></i> Mis pagos
+    </a>
+</li>
     `;
 
-    const adminMenu = `
+  const adminMenu = `
         <li class="nav-item">
             <a class="nav-link ${active === "dashboard" ? "active" : ""}" href="../dashboard/index.html">
                 <i class="bi bi-house-door"></i> Inicio
@@ -119,11 +125,17 @@ function renderNavbar(active = "") {
                         <i class="bi bi-calendar-event"></i> Citas
                     </a>
                 </li>
+
+                <li>
+    <a class="dropdown-item" href="../pagos/index.html">
+        <i class="bi bi-credit-card"></i> Pagos
+    </a>
+</li>
             </ul>
         </li>
     `;
 
-    nav.innerHTML = `
+  nav.innerHTML = `
         <div class="header">
             <div class="container">
                 <div class="text-center">
@@ -148,7 +160,9 @@ function renderNavbar(active = "") {
                         ${isAdminOFisio(user) ? adminMenu : ""}
                     </ul>
 
-                    ${user ? `
+                    ${
+                      user
+                        ? `
                         <div class="d-flex align-items-center gap-3">
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary btn-sm position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnNotificaciones">
@@ -182,86 +196,89 @@ function renderNavbar(active = "") {
                                 Salir
                             </button>
                         </div>
-                    ` : ""}
+                    `
+                        : ""
+                    }
                 </div>
             </div>
         </nav>
     `;
 
-    configurarLogout();
-    cargarNotificaciones();
+  configurarLogout();
+  cargarNotificaciones();
 
-    setInterval(() => {
-        cargarNotificaciones(false);
-    }, 30000);
+  setInterval(() => {
+    cargarNotificaciones(false);
+  }, 30000);
 }
 
 function configurarLogout() {
-    const btn = document.getElementById("logoutBtn");
+  const btn = document.getElementById("logoutBtn");
 
-    if (!btn) return;
+  if (!btn) return;
 
-    btn.addEventListener("click", async () => {
-        try {
-            await apiFetch("/api/logout", {
-                method: "POST"
-            });
-        } catch (error) {
-            console.warn("No se pudo cerrar sesión en backend:", error);
-        }
+  btn.addEventListener("click", async () => {
+    try {
+      await apiFetch("/api/logout", {
+        method: "POST",
+      });
+    } catch (error) {
+      console.warn("No se pudo cerrar sesión en backend:", error);
+    }
 
-        clearSession();
-        window.location.href = "../auth/login.html";
-    });
+    clearSession();
+    window.location.href = "../auth/login.html";
+  });
 }
 
 async function cargarNotificaciones(mostrarCarga = true) {
-    const lista = document.getElementById("listaNotificaciones");
-    const badge = document.getElementById("notificacionBadge");
-    const btnMarcarTodas = document.getElementById("btnMarcarTodas");
+  const lista = document.getElementById("listaNotificaciones");
+  const badge = document.getElementById("notificacionBadge");
+  const btnMarcarTodas = document.getElementById("btnMarcarTodas");
 
-    if (!lista || !badge) return;
+  if (!lista || !badge) return;
 
-    if (mostrarCarga) {
-        lista.innerHTML = `
+  if (mostrarCarga) {
+    lista.innerHTML = `
             <div class="text-center text-muted p-3">
                 Cargando...
             </div>
         `;
+  }
+
+  try {
+    const data = await apiFetch("/api/notificaciones");
+
+    const notificaciones = data.notificaciones || [];
+    const noLeidas = Number(data.no_leidas || 0);
+
+    if (noLeidas > 0) {
+      badge.textContent = noLeidas > 99 ? "99+" : noLeidas;
+      badge.classList.remove("d-none");
+    } else {
+      badge.classList.add("d-none");
     }
 
-    try {
-        const data = await apiFetch("/api/notificaciones");
+    if (btnMarcarTodas) {
+      btnMarcarTodas.onclick = async () => {
+        await marcarTodasNotificaciones();
+      };
+    }
 
-        const notificaciones = data.notificaciones || [];
-        const noLeidas = Number(data.no_leidas || 0);
-
-        if (noLeidas > 0) {
-            badge.textContent = noLeidas > 99 ? "99+" : noLeidas;
-            badge.classList.remove("d-none");
-        } else {
-            badge.classList.add("d-none");
-        }
-
-        if (btnMarcarTodas) {
-            btnMarcarTodas.onclick = async () => {
-                await marcarTodasNotificaciones();
-            };
-        }
-
-        if (notificaciones.length === 0) {
-            lista.innerHTML = `
+    if (notificaciones.length === 0) {
+      lista.innerHTML = `
                 <div class="text-center text-muted p-3">
                     No tienes notificaciones.
                 </div>
             `;
-            return;
-        }
+      return;
+    }
 
-        lista.innerHTML = notificaciones.map((notificacion) => {
-            const leida = Number(notificacion.leida || 0) === 1;
+    lista.innerHTML = notificaciones
+      .map((notificacion) => {
+        const leida = Number(notificacion.leida || 0) === 1;
 
-            return `
+        return `
                 <div class="px-3 py-2 border-bottom ${leida ? "" : "bg-light"}">
                     <div class="d-flex justify-content-between gap-2">
                         <div>
@@ -274,70 +291,75 @@ async function cargarNotificaciones(mostrarCarga = true) {
                             </div>
                         </div>
 
-                        ${!leida ? `
+                        ${
+                          !leida
+                            ? `
                             <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="marcarNotificacionLeida(${Number(notificacion.id_notificacion)})">
                                 Leída
                             </button>
-                        ` : ""}
+                        `
+                            : ""
+                        }
                     </div>
                 </div>
             `;
-        }).join("");
-    } catch (error) {
-        lista.innerHTML = `
+      })
+      .join("");
+  } catch (error) {
+    lista.innerHTML = `
             <div class="text-center text-danger p-3">
                 No se pudieron cargar las notificaciones.
             </div>
         `;
-    }
+  }
 }
 
 async function marcarNotificacionLeida(id) {
-    try {
-        await apiFetch(`/api/notificaciones/${id}/leida`, {
-            method: "PUT"
-        });
+  try {
+    await apiFetch(`/api/notificaciones/${id}/leida`, {
+      method: "PUT",
+    });
 
-        await cargarNotificaciones(false);
-    } catch (error) {
-        console.error("Error al marcar notificación como leída:", error);
-    }
+    await cargarNotificaciones(false);
+  } catch (error) {
+    console.error("Error al marcar notificación como leída:", error);
+  }
 }
 
 async function marcarTodasNotificaciones() {
-    try {
-        await apiFetch("/api/notificaciones/marcar-todas-leidas", {
-            method: "PUT"
-        });
+  try {
+    await apiFetch("/api/notificaciones/marcar-todas-leidas", {
+      method: "PUT",
+    });
 
-        await cargarNotificaciones(false);
-    } catch (error) {
-        console.error("Error al marcar todas las notificaciones:", error);
-    }
+    await cargarNotificaciones(false);
+  } catch (error) {
+    console.error("Error al marcar todas las notificaciones:", error);
+  }
 }
 
 function protegerPaginaAdminOFisio() {
-    const user = getCurrentUserSafe();
+  const user = getCurrentUserSafe();
 
-    if (!user) {
-        window.location.href = "../auth/login.html";
-        return;
-    }
+  if (!user) {
+    window.location.href = "../auth/login.html";
+    return;
+  }
 
-    if (!isAdminOFisio(user)) {
-        window.location.href = "../paciente/perfil.html";
-    }
+  if (!isAdminOFisio(user)) {
+    window.location.href = "../paciente/perfil.html";
+  }
 }
 
 function protegerPaginaPaciente() {
-    const user = getCurrentUserSafe();
+  const user = getCurrentUserSafe();
 
-    if (!user) {
-        window.location.href = "../auth/login.html";
-        return;
-    }
+  if (!user) {
+    window.location.href = "../auth/login.html";
+    return;
+  }
 
-    if (!isPaciente(user)) {
-        window.location.href = "../dashboard/index.html";
-    }
+  if (!isPaciente(user)) {
+    window.location.href = "../dashboard/index.html";
+  }
 }
