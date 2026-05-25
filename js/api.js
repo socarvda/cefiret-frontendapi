@@ -43,6 +43,30 @@ function buildApiUrl(path) {
   return `${baseUrl}${cleanPath}`;
 }
 
+function getErrorMessage(data, fallback = 'Ocurrió un error.') {
+  if (!data) {
+    return fallback;
+  }
+
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (data.message) {
+    return data.message;
+  }
+
+  if (data.errors) {
+    const firstKey = Object.keys(data.errors)[0];
+
+    if (firstKey && Array.isArray(data.errors[firstKey]) && data.errors[firstKey].length) {
+      return data.errors[firstKey][0];
+    }
+  }
+
+  return fallback;
+}
+
 async function apiFetch(path, options = {}) {
   const response = await fetch(buildApiUrl(path), {
     ...options,
@@ -64,14 +88,20 @@ async function apiFetch(path, options = {}) {
     };
   }
 
-  if (response.status === 401) {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const isLoginRequest = cleanPath === '/api/login';
+
+  if (response.status === 401 && !isLoginRequest) {
     clearSession();
     window.location.href = ROUTES?.login || '../auth/login.html';
     return;
   }
 
   if (!response.ok) {
-    throw data;
+    throw {
+      ...data,
+      message: getErrorMessage(data, 'Error en la solicitud.')
+    };
   }
 
   return data;
@@ -92,7 +122,7 @@ function showAlert(id, type, message) {
 
   element.innerHTML = `
     <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-      ${message}
+      ${escapeHtml(message)}
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   `;
