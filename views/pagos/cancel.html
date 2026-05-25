@@ -27,11 +27,11 @@
                             El pago fue cancelado o no se completó.
                         </div>
 
-                        <a href="../paciente/pagos.html" class="btn btn-primary">
-                            Ver mis pagos
+                        <a id="btnRegreso" href="#" class="btn btn-primary">
+                            Volver a pagos
                         </a>
 
-                        <a href="../dashboard/index.html" class="btn btn-secondary">
+                        <a id="btnInicio" href="#" class="btn btn-secondary">
                             Ir al inicio
                         </a>
                     </div>
@@ -48,7 +48,16 @@
 
     <script>
         requireAuth();
+
+        const user = getUser();
+        const esPaciente = Number(user?.id_tipo_usuario || 0) === 3;
+
         renderNavbar("pagos");
+
+        document.getElementById("btnRegreso").href = esPaciente ? "../paciente/pagos.html" : "../pagos/index.html";
+        document.getElementById("btnRegreso").textContent = esPaciente ? "Ver mis pagos" : "Volver a pagos";
+
+        document.getElementById("btnInicio").href = esPaciente ? "../paciente/perfil.html" : "../dashboard/index.html";
     </script>
 </body>
 

@@ -25,6 +25,10 @@
                     </div>
 
                     <div class="card-body">
+                        <div class="alert alert-info">
+                            Aquí puedes consultar tus pagos registrados y realizar el pago de los servicios pendientes.
+                        </div>
+
                         <div id="pagosContenido">
                             <div class="text-center text-muted py-4">
                                 Cargando pagos...
@@ -51,6 +55,15 @@
         const idPaciente = user.id_usuario;
         const pagosContenido = document.getElementById("pagosContenido");
 
+        function limpiarDetalle(detalle) {
+            return String(detalle || "")
+                .replace(/\s*\|\s*Sesión Stripe:\s*cs_[^\s|]+/gi, "")
+                .replace(/\s*\|\s*Pagado Stripe/gi, "")
+                .replace(/Pendiente Stripe\s*\|\s*/gi, "")
+                .replace(/Pagado Stripe\s*\|\s*/gi, "")
+                .trim();
+        }
+
         function esPagado(pago) {
             return String(pago.detalle || "").toLowerCase().includes("pagado stripe") ||
                 String(pago.metodo_pago || "").toLowerCase() === "stripe";
@@ -62,6 +75,14 @@
             }
 
             return '<span class="badge bg-warning text-dark">Pendiente</span>';
+        }
+
+        function limpiarMetodoPago(pago) {
+            if (esPagado(pago)) {
+                return "Stripe";
+            }
+
+            return "Pendiente";
         }
 
         async function cargarPagos() {
@@ -97,9 +118,9 @@
                                     <tr>
                                         <td>${escapeHtml(pago.fecha_pago || "")}</td>
                                         <td>$${Number(pago.monto || 0).toFixed(2)} MXN</td>
-                                        <td>${escapeHtml(pago.metodo_pago || "")}</td>
+                                        <td>${escapeHtml(limpiarMetodoPago(pago))}</td>
                                         <td>${badgePago(pago)}</td>
-                                        <td>${escapeHtml(pago.detalle || "")}</td>
+                                        <td>${escapeHtml(limpiarDetalle(pago.detalle))}</td>
                                         <td>
                                             ${esPagado(pago) ? `
                                                 <button class="btn btn-secondary btn-sm" disabled>

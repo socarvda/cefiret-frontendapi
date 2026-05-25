@@ -44,15 +44,24 @@
         requireAuth();
 
         const user = getUser();
-
-        if (Number(user?.id_tipo_usuario || 0) === 3) {
-            renderNavbar("pagos");
-        } else {
-            renderNavbar("pagos");
-        }
-
         const resultadoPago = document.getElementById("resultadoPago");
         const sessionId = getParam("session_id");
+
+        const esPaciente = Number(user?.id_tipo_usuario || 0) === 3;
+
+        renderNavbar("pagos");
+
+        function urlRegreso() {
+            return esPaciente ? "../paciente/pagos.html" : "../pagos/index.html";
+        }
+
+        function textoRegreso() {
+            return esPaciente ? "Ver mis pagos" : "Volver a pagos";
+        }
+
+        function urlInicio() {
+            return esPaciente ? "../paciente/perfil.html" : "../dashboard/index.html";
+        }
 
         async function confirmarPago() {
             if (!sessionId) {
@@ -60,6 +69,10 @@
                     <div class="alert alert-danger">
                         No se recibió la sesión de Stripe.
                     </div>
+
+                    <a href="${urlRegreso()}" class="btn btn-primary">
+                        ${textoRegreso()}
+                    </a>
                 `;
                 return;
             }
@@ -77,11 +90,11 @@
                         ${escapeHtml(data.message || "Pago confirmado correctamente.")}
                     </div>
 
-                    <a href="../paciente/pagos.html" class="btn btn-primary">
-                        Ver mis pagos
+                    <a href="${urlRegreso()}" class="btn btn-primary">
+                        ${textoRegreso()}
                     </a>
 
-                    <a href="../dashboard/index.html" class="btn btn-secondary">
+                    <a href="${urlInicio()}" class="btn btn-secondary">
                         Ir al inicio
                     </a>
                 `;
@@ -91,11 +104,11 @@
                         ${escapeHtml(error.message || "No se pudo confirmar el pago.")}
                     </div>
 
-                    <a href="../paciente/pagos.html" class="btn btn-primary">
-                        Ver mis pagos
+                    <a href="${urlRegreso()}" class="btn btn-primary">
+                        ${textoRegreso()}
                     </a>
 
-                    <a href="../dashboard/index.html" class="btn btn-secondary">
+                    <a href="${urlInicio()}" class="btn btn-secondary">
                         Ir al inicio
                     </a>
                 `;

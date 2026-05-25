@@ -29,6 +29,11 @@
                     </div>
 
                     <div class="card-body">
+                        <div class="alert alert-info">
+                            En esta sección el administrador o fisioterapeuta puede registrar pagos pendientes y abrir
+                            Stripe Checkout para cobrar al paciente en clínica.
+                        </div>
+
                         <div id="pagosContenido">
                             <div class="text-center text-muted py-4">
                                 Cargando pagos...
@@ -53,6 +58,15 @@
 
         const pagosContenido = document.getElementById("pagosContenido");
 
+        function limpiarDetalle(detalle) {
+            return String(detalle || "")
+                .replace(/\s*\|\s*Sesión Stripe:\s*cs_[^\s|]+/gi, "")
+                .replace(/\s*\|\s*Pagado Stripe/gi, "")
+                .replace(/Pendiente Stripe\s*\|\s*/gi, "")
+                .replace(/Pagado Stripe\s*\|\s*/gi, "")
+                .trim();
+        }
+
         function esPagado(pago) {
             return String(pago.detalle || "").toLowerCase().includes("pagado stripe") ||
                 String(pago.metodo_pago || "").toLowerCase() === "stripe";
@@ -64,6 +78,14 @@
             }
 
             return '<span class="badge bg-warning text-dark">Pendiente</span>';
+        }
+
+        function limpiarMetodoPago(pago) {
+            if (esPagado(pago)) {
+                return "Stripe";
+            }
+
+            return "Pendiente";
         }
 
         async function cargarPagos() {
@@ -106,9 +128,9 @@
                                             <td>${escapeHtml(pago.correo || "")}</td>
                                             <td>$${Number(pago.monto || 0).toFixed(2)} MXN</td>
                                             <td>${escapeHtml(pago.fecha_pago || "")}</td>
-                                            <td>${escapeHtml(pago.metodo_pago || "")}</td>
+                                            <td>${escapeHtml(limpiarMetodoPago(pago))}</td>
                                             <td>${badgePago(pago)}</td>
-                                            <td>${escapeHtml(pago.detalle || "")}</td>
+                                            <td>${escapeHtml(limpiarDetalle(pago.detalle))}</td>
                                             <td>
                                                 ${esPagado(pago) ? `
                                                     <button class="btn btn-secondary btn-sm" disabled>
@@ -116,7 +138,7 @@
                                                     </button>
                                                 ` : `
                                                     <button class="btn btn-success btn-sm" onclick="pagarConStripe(${Number(pago.id_pago)})">
-                                                        Pagar
+                                                        Cobrar con Stripe
                                                     </button>
                                                 `}
                                             </td>
