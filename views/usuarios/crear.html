@@ -67,6 +67,7 @@
                                         minlength="8"
                                         pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
                                         title="Mínimo 8 caracteres, una mayúscula, un número y un carácter especial.">
+
                                     <small class="text-muted">
                                         Mínimo 8 caracteres, una mayúscula, un número y un carácter especial.
                                     </small>
@@ -127,7 +128,7 @@
                 });
 
                 if (data.requiere_expediente) {
-                    const mailStatus = data.correo_enviado ? '1' : '0';
+                    const mailStatus = data.correo_se_intentara_despues ? '1' : '0';
 
                     window.location.href = `../expedientes/completar.html?id=${data.id_usuario}&registered=1&mail=${mailStatus}`;
                     return;
