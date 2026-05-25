@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Usuario - CEFIRET</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../../css/app.css">
@@ -12,59 +13,136 @@
 
 <body>
     <div id="appNavbar"></div>
+
     <div class="container">
         <main class="main-content">
             <div class="container">
                 <div id="alertBox"></div>
+
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0">Registrar Nuevo Usuario</h4>
                     </div>
+
                     <div class="card-body">
                         <form id="usuarioForm">
                             <div class="row">
-                                <div class="col-md-4 mb-3"><label class="form-label">Nombre *</label><input type="text"
-                                        name="nombre" class="form-control" required></div>
-                                <div class="col-md-4 mb-3"><label class="form-label">Apellido Paterno *</label><input
-                                        type="text" name="apaterno" class="form-control" required></div>
-                                <div class="col-md-4 mb-3"><label class="form-label">Apellido Materno *</label><input
-                                        type="text" name="amaterno" class="form-control" required></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3"><label class="form-label">Correo *</label><input type="email"
-                                        name="correo" class="form-control" required></div>
-                                <div class="col-md-6 mb-3"><label class="form-label">Teléfono *</label><input
-                                        type="text" name="telefono" class="form-control" required></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4 mb-3"><label class="form-label">Fecha de Nacimiento *</label><input
-                                        type="date" name="fecha_nac" class="form-control" required></div>
-                                <div class="col-md-4 mb-3"><label class="form-label">Contraseña *</label><input
-                                        type="password" name="contrasena" class="form-control" required minlength="6">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Nombre *</label>
+                                    <input type="text" name="nombre" class="form-control" required>
                                 </div>
-                                <div class="col-md-4 mb-3"><label class="form-label">Tipo Usuario *</label><select
-                                        name="id_tipo_usuario" class="form-select" required>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Apellido Paterno *</label>
+                                    <input type="text" name="apaterno" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Apellido Materno *</label>
+                                    <input type="text" name="amaterno" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Correo *</label>
+                                    <input type="email" name="correo" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Teléfono *</label>
+                                    <input type="text" name="telefono" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Fecha de Nacimiento *</label>
+                                    <input type="date" name="fecha_nac" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Contraseña *</label>
+                                    <input
+                                        type="password"
+                                        name="contrasena"
+                                        class="form-control"
+                                        required
+                                        minlength="8"
+                                        pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                                        title="Mínimo 8 caracteres, una mayúscula, un número y un carácter especial.">
+                                    <small class="text-muted">
+                                        Mínimo 8 caracteres, una mayúscula, un número y un carácter especial.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Tipo Usuario *</label>
+                                    <select name="id_tipo_usuario" class="form-select" required>
                                         <option value="">Seleccionar</option>
                                         <option value="1">Administrador</option>
                                         <option value="2">Fisioterapeuta</option>
                                         <option value="3">Paciente</option>
-                                    </select></div>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4"><a
-                                    href="../dashboard/index.html" class="btn btn-secondary">Cancelar</a><button
-                                    type="submit" class="btn btn-success">Registrar Usuario</button></div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="../dashboard/index.html" class="btn btn-secondary">
+                                    Cancelar
+                                </a>
+
+                                <button type="submit" class="btn btn-success" id="submitBtn">
+                                    Registrar Usuario
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="../../js/config.js"></script>
     <script src="../../js/api.js"></script>
     <script src="../../js/layout.js"></script>
-    <script>requireAuth(); renderNavbar('usuarios');</script>
-    <script>usuarioForm.addEventListener('submit', async e => { e.preventDefault(); try { const d = await apiFetch('/api/usuarios', { method: 'POST', body: JSON.stringify(formToObject(usuarioForm)) }); showAlert('alertBox', 'success', d.message || 'Usuario registrado exitosamente.'); if (d.requiere_expediente) setTimeout(() => location.href = `../expedientes/completar.html?id=${d.id_usuario}`, 800); else usuarioForm.reset() } catch (err) { showAlert('alertBox', 'danger', err.message || 'Error al registrar usuario') } })</script>
+
+    <script>
+        requireAuth();
+        renderNavbar('usuarios');
+
+        const usuarioForm = document.getElementById('usuarioForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        usuarioForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registrando...';
+
+            try {
+                const payload = formToObject(usuarioForm);
+
+                const data = await apiFetch('/api/usuarios', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                if (data.requiere_expediente) {
+                    const mailStatus = data.correo_enviado ? '1' : '0';
+
+                    window.location.href = `../expedientes/completar.html?id=${data.id_usuario}&registered=1&mail=${mailStatus}`;
+                    return;
+                }
+
+                showAlert('alertBox', 'success', data.message || 'Usuario registrado exitosamente.');
+                usuarioForm.reset();
+            } catch (error) {
+                showAlert('alertBox', 'danger', error.message || 'Error al registrar usuario.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Registrar Usuario';
+            }
+        });
+    </script>
 </body>
 
 </html>
