@@ -40,7 +40,7 @@
                                     name="fecha_nac" class="form-control" required></div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end"><a href="buscar.html"
                                     class="btn btn-secondary me-md-2">Cancelar</a><button type="submit"
-                                    class="btn btn-primary">Actualizar</button></div>
+                                    class="btn btn-primary" id="btnActualizar">Actualizar</button></div>
                         </form>
                     </div>
                 </div>
@@ -51,8 +51,45 @@
     <script src="../../js/config.js"></script>
     <script src="../../js/api.js"></script>
     <script src="../../js/layout.js"></script>
-    <script>requireAuth(); renderNavbar('usuarios');</script>
-    <script>const id = getParam('id'); async function cargar() { try { const d = await apiFetch(`/api/usuarios/${id}`); const u = d.usuario; for (const k of ['nombre', 'apaterno', 'amaterno', 'correo', 'telefono', 'fecha_nac']) editForm[k].value = u[k] || '' } catch (e) { showAlert('alertBox', 'danger', e.message || 'No se pudo cargar usuario') } } editForm.addEventListener('submit', async e => { e.preventDefault(); try { const d = await apiFetch(`/api/usuarios/${id}`, { method: 'PUT', body: JSON.stringify(formToObject(editForm)) }); showAlert('alertBox', 'success', d.message || 'Usuario actualizado') } catch (err) { showAlert('alertBox', 'danger', err.message || 'Error al actualizar') } }); cargar()</script>
+    <script>requireAuth(); protegerPaginaAdminOFisio(); renderNavbar('usuarios');</script>
+    <script>
+        const id = getParam('id');
+
+        async function cargar() {
+            try {
+                const d = await apiFetch(`/api/usuarios/${id}`);
+                const u = d.usuario;
+
+                for (const k of ['nombre', 'apaterno', 'amaterno', 'correo', 'telefono', 'fecha_nac']) {
+                    editForm[k].value = u[k] || '';
+                }
+            } catch (e) {
+                showAlert('alertBox', 'danger', e.message || 'No se pudo cargar usuario')
+            }
+        }
+
+        editForm.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            btnActualizar.disabled = true;
+            btnActualizar.textContent = 'Actualizando...';
+
+            try {
+                await apiFetch(`/api/usuarios/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(formToObject(editForm))
+                });
+
+                window.location.href = 'buscar.html?updated=1';
+            } catch (err) {
+                showAlert('alertBox', 'danger', err.message || 'Error al actualizar');
+                btnActualizar.disabled = false;
+                btnActualizar.textContent = 'Actualizar';
+            }
+        });
+
+        cargar()
+    </script>
 </body>
 
 </html>

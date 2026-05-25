@@ -104,8 +104,8 @@
 
                 pagosContenido.innerHTML = `
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
+                        <table class="table table-hover">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Paciente</th>
                                     <th>Correo</th>
@@ -120,9 +120,9 @@
 
                             <tbody>
                                 ${pagos.map((pago) => {
-                                    const paciente = `${pago.nombre || ""} ${pago.apaterno || ""} ${pago.amaterno || ""}`.trim();
+                    const paciente = `${pago.nombre || ""} ${pago.apaterno || ""} ${pago.amaterno || ""}`.trim();
 
-                                    return `
+                    return `
                                         <tr>
                                             <td>${escapeHtml(paciente)}</td>
                                             <td>${escapeHtml(pago.correo || "")}</td>
@@ -144,7 +144,7 @@
                                             </td>
                                         </tr>
                                     `;
-                                }).join("")}
+                }).join("")}
                             </tbody>
                         </table>
                     </div>

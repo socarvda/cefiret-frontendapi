@@ -101,54 +101,47 @@
                 }
 
                 rutinasContenido.innerHTML = `
-                    <div class="row g-3">
-                        ${rutinas.map((rutina) => {
-                            const titulo = obtenerTituloRutina(rutina);
-                            const descripcion = obtenerDescripcionRutina(rutina);
-                            const urlVideo = obtenerUrlVideo(rutina);
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Rutina</th>
+                                    <th>Descripción</th>
+                                    <th>Indicaciones</th>
+                                    <th>Video</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rutinas.map((rutina) => {
+                                    const titulo = obtenerTituloRutina(rutina);
+                                    const descripcion = obtenerDescripcionRutina(rutina);
+                                    const urlVideo = obtenerUrlVideo(rutina);
 
-                            return `
-                                <div class="col-md-6">
-                                    <div class="card h-100 shadow-sm">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                ${escapeHtml(titulo)}
-                                            </h5>
-
-                                            <p class="card-text text-muted">
-                                                ${escapeHtml(descripcion)}
-                                            </p>
-
-                                            <div class="mb-2">
-                                                ${rutina.fecha_asignacion ? `
-                                                    <span class="badge bg-primary">
-                                                        Asignada: ${escapeHtml(rutina.fecha_asignacion)}
-                                                    </span>
-                                                ` : ""}
-
-                                                ${rutina.tiempo_minutos ? `
-                                                    <span class="badge bg-secondary">
-                                                        ${escapeHtml(rutina.tiempo_minutos)} min
-                                                    </span>
-                                                ` : ""}
-
-                                                ${rutina.repeticiones ? `
-                                                    <span class="badge bg-info text-dark">
-                                                        ${escapeHtml(rutina.repeticiones)} repeticiones
-                                                    </span>
-                                                ` : ""}
-                                            </div>
-
-                                            ${urlVideo ? `
-                                                <a href="${escapeHtml(urlVideo)}" target="_blank" class="btn btn-outline-primary btn-sm">
-                                                    <i class="bi bi-play-circle"></i> Ver video
-                                                </a>
-                                            ` : ""}
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join("")}
+                                    return `
+                                        <tr>
+                                            <td>${formatDate(rutina.fecha || rutina.fecha_asignacion || "")}</td>
+                                            <td>${escapeHtml(titulo)}</td>
+                                            <td>${escapeHtml(descripcion)}</td>
+                                            <td>
+                                                ${rutina.repeticiones ? `${escapeHtml(rutina.repeticiones)} repeticiones` : ""}
+                                                ${rutina.series ? ` / ${escapeHtml(rutina.series)} series` : ""}
+                                                ${rutina.tiempo ? ` / ${escapeHtml(rutina.tiempo)} min` : ""}
+                                            </td>
+                                            <td>
+                                                ${urlVideo ? `
+                                                    <a href="${escapeHtml(urlVideo)}" target="_blank" class="btn btn-primary btn-sm">
+                                                        Ver video
+                                                    </a>
+                                                ` : `
+                                                    <span class="text-muted">Sin video</span>
+                                                `}
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join("")}
+                            </tbody>
+                        </table>
                     </div>
                 `;
             } catch (error) {

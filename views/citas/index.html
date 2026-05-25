@@ -40,9 +40,7 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
                     <div>
                         <h2 class="mb-0 fw-bold" style="color:#1e3a5f">Gestión de Citas</h2>
-                        <p class="text-muted mb-0">
-                            Calendario de Google y listado de citas programadas.
-                        </p>
+                        <p class="text-muted mb-0">Calendario de Google y listado de citas programadas.</p>
                     </div>
 
                     <div class="d-flex gap-2 flex-wrap align-items-center" id="googleActions"></div>
@@ -59,9 +57,8 @@
 
                     <div class="table-responsive">
                         <table class="table table-hover mb-0" style="font-size:.875rem">
-                            <thead class="table-light">
+                            <thead class="table-dark">
                                 <tr>
-                                    <th>#</th>
                                     <th>Paciente</th>
                                     <th>Fisioterapeuta</th>
                                     <th>Fecha</th>
@@ -89,6 +86,7 @@
 
     <script>
         requireAuth();
+        protegerPaginaAdminOFisio();
         renderNavbar('citas');
 
         const updated = getParam('updated');
@@ -142,11 +140,7 @@
             }
 
             container.innerHTML = `
-                <iframe
-                    class="calendar-frame"
-                    src="${escapeHtml(embedUrl)}"
-                    loading="lazy">
-                </iframe>
+                <iframe class="calendar-frame" src="${escapeHtml(embedUrl)}" loading="lazy"></iframe>
             `;
         }
 
@@ -157,25 +151,17 @@
                 googleActions.innerHTML = `
                     ${d.google_connected
                         ? `
-                                <span class="gcal-badge connected">Google Calendar conectado</span>
-                                <a href="${googleCalendarDefaultUrl()}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    Abrir Google Calendar
-                                </a>
-                                <a href="${g('/google/calendar/disconnect')}" class="btn btn-sm btn-outline-danger">
-                                    Desconectar
-                                </a>
-                            `
+                            <span class="gcal-badge connected">Google Calendar conectado</span>
+                            <a href="${googleCalendarDefaultUrl()}" target="_blank" class="btn btn-sm btn-outline-primary">Abrir Google Calendar</a>
+                            <a href="${g('/google/calendar/disconnect')}" class="btn btn-sm btn-outline-danger">Desconectar</a>
+                        `
                         : `
-                                <span class="gcal-badge disconnected">Google Calendar desconectado</span>
-                                <a href="${g('/google/calendar/connect')}" class="btn btn-sm btn-primary">
-                                    Conectar Google
-                                </a>
-                            `
+                            <span class="gcal-badge disconnected">Google Calendar desconectado</span>
+                            <a href="${g('/google/calendar/connect')}" class="btn btn-sm btn-primary">Conectar Google</a>
+                        `
                     }
 
-                    <a href="crear.html" class="btn btn-success">
-                        Nueva Cita
-                    </a>
+                    <a href="crear.html" class="btn btn-success">Nueva Cita</a>
                 `;
 
                 renderGoogleCalendar(d.calendar_embed_url || '', d.google_connected);
@@ -183,65 +169,41 @@
                 citasBody.innerHTML = (d.citas && d.citas.length)
                     ? d.citas.map(c => `
                         <tr class="${c.estatus === 'cancelada' ? 'table-secondary' : ''}">
-                            <td><strong>#${c.id_cita}</strong></td>
-
-                            <td>
-                                ${escapeHtml(c.paciente)}
-                                ${escapeHtml(c.paciente_apaterno || '')}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(c.fisio)}
-                                ${escapeHtml(c.fisio_apaterno || '')}
-                            </td>
-
+                            <td>${escapeHtml(c.paciente)} ${escapeHtml(c.paciente_apaterno || '')}</td>
+                            <td>${escapeHtml(c.fisio)} ${escapeHtml(c.fisio_apaterno || '')}</td>
                             <td>${formatDate(c.fecha)}</td>
-
                             <td>${formatTime(c.hora)}</td>
-
                             <td>${escapeHtml(c.motivo || '—')}</td>
-
                             <td>
                                 <span class="badge rounded-pill bg-${c.estatus === 'cancelada'
-                            ? 'danger'
-                            : (c.estatus === 'completada' ? 'success' : 'primary')
-                        }">
+                                    ? 'danger'
+                                    : (c.estatus === 'completada' ? 'success' : 'primary')
+                                }">
                                     ${escapeHtml(c.estatus || 'programada')}
                                 </span>
                             </td>
-
                             <td>
                                 ${c.google_event_id
-                            ? '<span class="badge bg-success">Sincronizada</span>'
-                            : '<span class="badge bg-secondary">Solo sistema</span>'
-                        }
+                                    ? '<span class="badge bg-success">Sincronizada</span>'
+                                    : '<span class="badge bg-secondary">Solo sistema</span>'
+                                }
                             </td>
-
                             <td>
                                 <div class="d-flex gap-1 flex-wrap">
-                                    <a href="detalles.html?id=${c.id_cita}" class="btn btn-sm btn-outline-info">
-                                        Ver
-                                    </a>
-
-                                    <a href="editar.html?id=${c.id_cita}" class="btn btn-sm btn-outline-warning">
-                                        Editar
-                                    </a>
-
+                                    <a href="detalles.html?id=${c.id_cita}" class="btn btn-sm btn-outline-info">Ver</a>
+                                    <a href="editar.html?id=${c.id_cita}" class="btn btn-sm btn-outline-warning">Editar</a>
                                     ${c.estatus !== 'cancelada'
-                            ? `<button class="btn btn-sm btn-outline-secondary" onclick="cancelar(${c.id_cita})">Cancelar</button>`
-                            : ''
-                        }
-
-                                    <button class="btn btn-sm btn-outline-danger" onclick="eliminar(${c.id_cita})">
-                                        Eliminar
-                                    </button>
+                                        ? `<button class="btn btn-sm btn-outline-secondary" onclick="cancelar(${c.id_cita})">Cancelar</button>`
+                                        : ''
+                                    }
+                                    <button class="btn btn-sm btn-outline-danger" onclick="eliminar(${c.id_cita})">Eliminar</button>
                                 </div>
                             </td>
                         </tr>
                     `).join('')
                     : `
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-5">
+                            <td colspan="8" class="text-center text-muted py-5">
                                 No hay citas registradas
                             </td>
                         </tr>
@@ -252,9 +214,7 @@
         }
 
         async function cancelar(id) {
-            if (!confirm('¿Cancelar esta cita?')) {
-                return;
-            }
+            if (!confirm('¿Cancelar esta cita?')) return;
 
             try {
                 const d = await apiFetch(`/api/citas/${id}/cancelar`, {
@@ -270,9 +230,7 @@
         }
 
         async function eliminar(id) {
-            if (!confirm('¿Eliminar permanentemente?')) {
-                return;
-            }
+            if (!confirm('¿Eliminar permanentemente?')) return;
 
             try {
                 const d = await apiFetch(`/api/citas/${id}`, {

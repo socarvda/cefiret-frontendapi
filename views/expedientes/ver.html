@@ -16,54 +16,412 @@
         <main class="main-content">
             <div class="container expediente-show-page">
                 <div id="alertBox"></div>
+
                 <div class="card shadow expediente-show-card">
                     <div class="card-header expediente-show-header text-white">
                         <h4 class="mb-0">Expediente Médico</h4>
                     </div>
+
                     <div class="card-body expediente-show-body">
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <h5>Datos del Paciente</h5>
                                 <table class="table table-bordered" id="pacienteTable"></table>
                             </div>
+
                             <div class="col-md-6">
                                 <h5>Información Médica</h5>
                                 <div id="expedienteBox"></div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3"><a href="../rutinas/index.html" class="text-decoration-none">
-                                    <div class="card">
-                                        <div class="card-body text-center"><i
-                                                class="bi bi-activity fs-1 text-success"></i>
-                                            <h5>Rutinas</h5>
-                                            <p class="text-muted">Rutinas asignadas</p>
-                                        </div>
-                                    </div>
-                                </a></div>
-                            <div class="col-md-6 mb-3"><a id="citasLink" href="#" class="text-decoration-none">
-                                    <div class="card">
-                                        <div class="card-body text-center"><i
-                                                class="bi bi-calendar-check fs-1 text-warning"></i>
-                                            <h5>Citas</h5>
-                                            <p class="text-muted">Historial de citas</p>
-                                        </div>
-                                    </div>
-                                </a></div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Rutinas del paciente</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div id="rutinasBox" class="table-responsive">
+                                    <p class="text-muted mb-0">Cargando rutinas...</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mt-4"><a href="buscar.html" class="btn btn-secondary">Volver a busqueda</a><a
-                                href="../dashboard/index.html" class="btn btn-primary">Ir al incio</a></div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Citas del paciente</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div id="citasBox" class="table-responsive">
+                                    <p class="text-muted mb-0">Cargando citas...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Historial de visitas</h5>
+
+                                <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#historialModal">
+                                    Agregar visita
+                                </button>
+                            </div>
+
+                            <div class="card-body">
+                                <div id="historialBox" class="table-responsive">
+                                    <p class="text-muted mb-0">Cargando historial...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="buscar.html" class="btn btn-secondary">Volver a busqueda</a>
+                            <a href="../dashboard/index.html" class="btn btn-primary">Ir al incio</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <div class="modal fade" id="historialModal" tabindex="-1" aria-labelledby="historialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="historialForm">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="historialModalLabel">Agregar visita al historial</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="modalAlertBox"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Fecha de visita *</label>
+                            <input type="date" name="fecha_visita" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Motivo *</label>
+                            <input type="text" name="motivo" class="form-control" required
+                                placeholder="Ejemplo: Dolor lumbar, seguimiento, rehabilitación de rodilla...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tratamiento realizado *</label>
+                            <textarea name="tratamiento_realizado" class="form-control" rows="4" required
+                                placeholder="Describe qué se hizo durante la visita..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Observaciones</label>
+                            <textarea name="observaciones" class="form-control" rows="3"
+                                placeholder="Notas adicionales, recomendaciones o evolución del paciente..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit" class="btn btn-primary" id="guardarHistorialBtn">
+                            Guardar visita
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/config.js"></script>
     <script src="../../js/api.js"></script>
     <script src="../../js/layout.js"></script>
-    <script>requireAuth(); renderNavbar('expedientes');</script>
-    <script>const id = getParam('id'); citasLink.href = `citas.html?id=${id}`; (async () => { try { const d = await apiFetch(`/api/expedientes/pacientes/${id}`); const p = d.paciente, e = d.expediente; pacienteTable.innerHTML = `<tr><th width="40%">Nombre Completo:</th><td>${escapeHtml(p.nombre)} ${escapeHtml(p.apaterno)} ${escapeHtml(p.amaterno)}</td></tr><tr><th>Correo:</th><td>${escapeHtml(p.correo)}</td></tr><tr><th>Teléfono:</th><td>${escapeHtml(p.telefono)}</td></tr><tr><th>Fecha Nacimiento:</th><td>${formatDate(p.fecha_nac)}</td></tr>`; if (!e) { expedienteBox.innerHTML = `<p class="text-muted">No se ha completado la información médica del paciente.</p><a href="completar.html?id=${id}" class="btn btn-success">Completar expediente</a>`; return } expedienteBox.innerHTML = `<table class="table table-bordered"><tr><th width="40%">Sexo:</th><td>${escapeHtml(e.sexo)}</td></tr><tr><th>Estado Civil:</th><td>${escapeHtml(e.edo_civil)}</td></tr><tr><th>Ocupación:</th><td>${escapeHtml(e.ocupacion)}</td></tr><tr><th>Domicilio:</th><td>${escapeHtml(e.domicilio)}, ${escapeHtml(e.colonia)}, ${escapeHtml(e.municipio)}</td></tr><tr><th>Lugar de Nacimiento:</th><td>${escapeHtml(e.lugar_nac)}</td></tr><tr><th>Lugar de Residencia:</th><td>${escapeHtml(e.lugar_residencia)}</td></tr><tr><th>Contacto de Emergencia:</th><td>${escapeHtml(e.contacto_emergencia)}</td></tr><tr><th>Nacionalidad:</th><td>${escapeHtml(e.nacionalidad)}</td></tr><tr><th>Religión:</th><td>${escapeHtml(e.religion)}</td></tr><tr><th>Escolaridad:</th><td>${escapeHtml(e.escolaridad)}</td></tr><tr><th>Presión Arterial:</th><td>${escapeHtml(e.presion_arterial)}</td></tr><tr><th>Frecuencia Cardíaca:</th><td>${escapeHtml(e.frec_cardiaca)}</td></tr><tr><th>Llenado Capilar:</th><td>${escapeHtml(e.llenado_capilar)}</td></tr><tr><th>Glucosa:</th><td>${escapeHtml(e.glucosa)}</td></tr><tr><th>Frecuencia Respiratoria:</th><td>${escapeHtml(e.frec_respiratoria)}</td></tr><tr><th>Alimentación:</th><td>${escapeHtml(e.alimentacion)}</td></tr></table>` } catch (e) { showAlert('alertBox', 'danger', e.message || 'Error al cargar expediente') } })()</script>
+
+    <script>requireAuth(); protegerPaginaAdminOFisio(); renderNavbar('expedientes');</script>
+
+    <script>
+        const id = getParam('id');
+        const historialForm = document.getElementById('historialForm');
+        const guardarHistorialBtn = document.getElementById('guardarHistorialBtn');
+
+        historialForm.fecha_visita.value = new Date().toISOString().slice(0, 10);
+
+        function textoVacio(valor) {
+            return valor ? escapeHtml(valor) : 'No registrado';
+        }
+
+        function fechaSegura(fecha) {
+            return fecha ? formatDate(fecha) : 'No registrada';
+        }
+
+        function obtenerEstadoCita(cita) {
+            return cita.estado || cita.estatus || cita.estado_cita || 'Programada';
+        }
+
+        function badgeEstadoCita(estado) {
+            const estadoLower = String(estado || '').toLowerCase();
+
+            if (estadoLower.includes('cancel')) return 'bg-danger';
+            if (estadoLower.includes('realiz')) return 'bg-success';
+            if (estadoLower.includes('pend')) return 'bg-warning text-dark';
+
+            return 'bg-primary';
+        }
+
+        async function cargarExpediente() {
+            try {
+                const d = await apiFetch(`/api/expedientes/pacientes/${id}`);
+                const p = d.paciente;
+                const e = d.expediente;
+
+                pacienteTable.innerHTML = `
+                    <tr>
+                        <th width="40%">Nombre Completo:</th>
+                        <td>${escapeHtml(p.nombre)} ${escapeHtml(p.apaterno)} ${escapeHtml(p.amaterno)}</td>
+                    </tr>
+                    <tr>
+                        <th>Correo:</th>
+                        <td>${escapeHtml(p.correo)}</td>
+                    </tr>
+                    <tr>
+                        <th>Teléfono:</th>
+                        <td>${escapeHtml(p.telefono)}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha Nacimiento:</th>
+                        <td>${formatDate(p.fecha_nac)}</td>
+                    </tr>
+                `;
+
+                if (!e) {
+                    expedienteBox.innerHTML = `
+                        <p class="text-muted">No se ha completado la información médica del paciente.</p>
+                        <a href="completar.html?id=${id}" class="btn btn-success">Completar expediente</a>
+                    `;
+                    return;
+                }
+
+                expedienteBox.innerHTML = `
+                    <table class="table table-bordered">
+                        <tr><th width="40%">Sexo:</th><td>${textoVacio(e.sexo)}</td></tr>
+                        <tr><th>Estado Civil:</th><td>${textoVacio(e.edo_civil)}</td></tr>
+                        <tr><th>Ocupación:</th><td>${textoVacio(e.ocupacion)}</td></tr>
+                        <tr><th>Domicilio:</th><td>${textoVacio(e.domicilio)}, ${textoVacio(e.colonia)}, ${textoVacio(e.municipio)}</td></tr>
+                        <tr><th>Lugar de Nacimiento:</th><td>${textoVacio(e.lugar_nac)}</td></tr>
+                        <tr><th>Lugar de Residencia:</th><td>${textoVacio(e.lugar_residencia)}</td></tr>
+                        <tr><th>Contacto de Emergencia:</th><td>${textoVacio(e.contacto_emergencia)}</td></tr>
+                        <tr><th>Nacionalidad:</th><td>${textoVacio(e.nacionalidad)}</td></tr>
+                        <tr><th>Religión:</th><td>${textoVacio(e.religion)}</td></tr>
+                        <tr><th>Escolaridad:</th><td>${textoVacio(e.escolaridad)}</td></tr>
+                        <tr><th>Presión Arterial:</th><td>${textoVacio(e.presion_arterial)}</td></tr>
+                        <tr><th>Frecuencia Cardíaca:</th><td>${textoVacio(e.frec_cardiaca)}</td></tr>
+                        <tr><th>Llenado Capilar:</th><td>${textoVacio(e.llenado_capilar)}</td></tr>
+                        <tr><th>Glucosa:</th><td>${textoVacio(e.glucosa)}</td></tr>
+                        <tr><th>Frecuencia Respiratoria:</th><td>${textoVacio(e.frec_respiratoria)}</td></tr>
+                        <tr><th>Alimentación:</th><td>${textoVacio(e.alimentacion)}</td></tr>
+                    </table>
+                `;
+            } catch (e) {
+                showAlert('alertBox', 'danger', e.message || 'Error al cargar expediente');
+            }
+        }
+
+        async function cargarRutinas() {
+            try {
+                const d = await apiFetch(`/api/paciente/${id}/videos`);
+                const rutinas = d.videos || [];
+
+                if (!rutinas.length) {
+                    rutinasBox.innerHTML = `
+                        <div class="alert alert-info mb-0">
+                            Este paciente no tiene rutinas asignadas.
+                        </div>
+                    `;
+                    return;
+                }
+
+                rutinasBox.innerHTML = `
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Rutina</th>
+                                <th>Descripción</th>
+                                <th>Video</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rutinas.map(r => `
+                                <tr>
+                                    <td>${fechaSegura(r.fecha)}</td>
+                                    <td>${textoVacio(r.titulo)}</td>
+                                    <td>${textoVacio(r.descripcion)}</td>
+                                    <td>
+                                        ${r.url ? `
+                                            <a href="${escapeHtml(r.url)}" target="_blank" class="btn btn-primary btn-sm">
+                                                Ver video
+                                            </a>
+                                        ` : `
+                                            <span class="text-muted">Sin video</span>
+                                        `}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (e) {
+                rutinasBox.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        ${escapeHtml(e.message || 'Error al cargar rutinas.')}
+                    </div>
+                `;
+            }
+        }
+
+        async function cargarCitas() {
+            try {
+                const d = await apiFetch(`/api/paciente/${id}/citas`);
+                const citas = d.citas || [];
+
+                if (!citas.length) {
+                    citasBox.innerHTML = `
+                        <div class="alert alert-info mb-0">
+                            Este paciente no tiene citas registradas.
+                        </div>
+                    `;
+                    return;
+                }
+
+                citasBox.innerHTML = `
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Fisioterapeuta</th>
+                                <th>Motivo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${citas.map(c => {
+                                const fisio = `${c.fisio_nombre || ''} ${c.fisio_apaterno || ''} ${c.fisio_amaterno || ''}`.trim();
+                                const estado = obtenerEstadoCita(c);
+
+                                return `
+                                    <tr>
+                                        <td>${fechaSegura(c.fecha)}</td>
+                                        <td>${textoVacio(c.hora)}</td>
+                                        <td>${fisio ? escapeHtml(fisio) : 'No asignado'}</td>
+                                        <td>${textoVacio(c.motivo || c.descripcion)}</td>
+                                        <td>
+                                            <span class="badge ${badgeEstadoCita(estado)}">
+                                                ${escapeHtml(estado)}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (e) {
+                citasBox.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        ${escapeHtml(e.message || 'Error al cargar citas.')}
+                    </div>
+                `;
+            }
+        }
+
+        async function cargarHistorial() {
+            try {
+                const d = await apiFetch(`/api/paciente/${id}/historial-visitas`);
+                const historial = d.historial || [];
+
+                if (!historial.length) {
+                    historialBox.innerHTML = `
+                        <div class="alert alert-info mb-0">
+                            Este paciente todavía no tiene visitas registradas.
+                        </div>
+                    `;
+                    return;
+                }
+
+                historialBox.innerHTML = `
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Motivo</th>
+                                <th>Tratamiento realizado</th>
+                                <th>Observaciones</th>
+                                <th>Registrado por</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${historial.map(h => {
+                                const registradoPor = `${h.registrado_nombre || ''} ${h.registrado_apaterno || ''} ${h.registrado_amaterno || ''}`.trim();
+
+                                return `
+                                    <tr>
+                                        <td>${fechaSegura(h.fecha_visita)}</td>
+                                        <td>${textoVacio(h.motivo)}</td>
+                                        <td>${textoVacio(h.tratamiento_realizado)}</td>
+                                        <td>${textoVacio(h.observaciones)}</td>
+                                        <td>${registradoPor ? escapeHtml(registradoPor) : 'No registrado'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (e) {
+                historialBox.innerHTML = `
+                    <div class="alert alert-danger mb-0">
+                        ${escapeHtml(e.message || 'Error al cargar historial.')}
+                    </div>
+                `;
+            }
+        }
+
+        historialForm.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            guardarHistorialBtn.disabled = true;
+            guardarHistorialBtn.textContent = 'Guardando...';
+
+            try {
+                const d = await apiFetch(`/api/paciente/${id}/historial-visitas`, {
+                    method: 'POST',
+                    body: JSON.stringify(formToObject(historialForm))
+                });
+
+                historialForm.reset();
+                historialForm.fecha_visita.value = new Date().toISOString().slice(0, 10);
+
+                const modal = bootstrap.Modal.getInstance(document.getElementById('historialModal'));
+                modal.hide();
+
+                showAlert('alertBox', 'success', d.message || 'Visita registrada correctamente.');
+                cargarHistorial();
+            } catch (e) {
+                showAlert('modalAlertBox', 'danger', e.message || 'Error al registrar visita.');
+            } finally {
+                guardarHistorialBtn.disabled = false;
+                guardarHistorialBtn.textContent = 'Guardar visita';
+            }
+        });
+
+        cargarExpediente();
+        cargarRutinas();
+        cargarCitas();
+        cargarHistorial();
+    </script>
 </body>
 
 </html>

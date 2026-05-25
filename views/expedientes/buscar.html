@@ -30,7 +30,6 @@
                             <table class="table table-hover">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nombre Completo</th>
                                         <th>Correo</th>
                                         <th>Teléfono</th>
@@ -51,8 +50,33 @@
     <script src="../../js/config.js"></script>
     <script src="../../js/api.js"></script>
     <script src="../../js/layout.js"></script>
-    <script>requireAuth(); renderNavbar('expedientes');</script>
-    <script>async function cargar(q = '') { try { const d = await apiFetch('/api/expedientes/pacientes' + (q ? `?query=${encodeURIComponent(q)}` : '')); pacientesBody.innerHTML = (d.pacientes && d.pacientes.length) ? d.pacientes.map(p => `<tr><td>${p.id_usuario}</td><td>${escapeHtml(p.nombre)} ${escapeHtml(p.apaterno)} ${escapeHtml(p.amaterno)}</td><td>${escapeHtml(p.correo)}</td><td>${escapeHtml(p.telefono)}</td><td>${formatDate(p.fecha_nac)}</td><td><a href="ver.html?id=${p.id_usuario}" class="btn btn-info btn-sm">Ver Expediente</a></td></tr>`).join('') : '<tr><td colspan="6" class="text-center text-muted">No se encontraron pacientes</td></tr>' } catch (e) { showAlert('alertBox', 'danger', e.message || 'Error al buscar pacientes') } } searchForm.addEventListener('submit', e => { e.preventDefault(); cargar(new FormData(searchForm).get('query') || '') }); cargar()</script>
+    <script>requireAuth(); protegerPaginaAdminOFisio(); renderNavbar('expedientes');</script>
+    <script>
+        async function cargar(q = '') {
+            try {
+                const d = await apiFetch('/api/expedientes/pacientes' + (q ? `?query=${encodeURIComponent(q)}` : ''));
+
+                pacientesBody.innerHTML = (d.pacientes && d.pacientes.length)
+                    ? d.pacientes.map(p => `<tr>
+                        <td>${escapeHtml(p.nombre)} ${escapeHtml(p.apaterno)} ${escapeHtml(p.amaterno)}</td>
+                        <td>${escapeHtml(p.correo)}</td>
+                        <td>${escapeHtml(p.telefono)}</td>
+                        <td>${formatDate(p.fecha_nac)}</td>
+                        <td><a href="ver.html?id=${p.id_usuario}" class="btn btn-info btn-sm">Ver Expediente</a></td>
+                    </tr>`).join('')
+                    : '<tr><td colspan="5" class="text-center text-muted">No se encontraron pacientes</td></tr>';
+            } catch (e) {
+                showAlert('alertBox', 'danger', e.message || 'Error al buscar pacientes');
+            }
+        }
+
+        searchForm.addEventListener('submit', e => {
+            e.preventDefault();
+            cargar(new FormData(searchForm).get('query') || '');
+        });
+
+        cargar()
+    </script>
 </body>
 
 </html>

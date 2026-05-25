@@ -30,7 +30,6 @@
                             <table class="table table-hover">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
                                         <th>Nombre Completo</th>
                                         <th>Correo</th>
                                         <th>Teléfono</th>
@@ -52,8 +51,46 @@
     <script src="../../js/config.js"></script>
     <script src="../../js/api.js"></script>
     <script src="../../js/layout.js"></script>
-    <script>requireAuth(); renderNavbar('usuarios');</script>
-    <script>async function cargar(q = '') { try { const d = await apiFetch('/api/usuarios' + (q ? `?query=${encodeURIComponent(q)}` : '')); usuariosBody.innerHTML = (d.usuarios && d.usuarios.length) ? d.usuarios.map(u => `<tr><td>${u.id_usuario}</td><td>${escapeHtml(u.nombre)} ${escapeHtml(u.apaterno)} ${escapeHtml(u.amaterno)}</td><td>${escapeHtml(u.correo)}</td><td>${escapeHtml(u.telefono)}</td><td>${formatDate(u.fecha_nac)}</td><td>${u.id_tipo_usuario}</td><td><a href="editar.html?id=${u.id_usuario}" class="btn btn-warning btn-sm">Editar</a></td></tr>`).join('') : '<tr><td colspan="7" class="text-center text-muted">No se encontraron usuarios</td></tr>' } catch (e) { showAlert('alertBox', 'danger', e.message || 'Error al buscar') } } searchForm.addEventListener('submit', e => { e.preventDefault(); cargar(new FormData(searchForm).get('query') || '') }); cargar()</script>
+    <script>requireAuth(); protegerPaginaAdminOFisio(); renderNavbar('usuarios');</script>
+    <script>
+        if (getParam('updated') === '1') {
+            showAlert('alertBox', 'success', 'Usuario actualizado correctamente.');
+            window.history.replaceState({}, document.title, 'buscar.html');
+        }
+
+        function tipoTexto(tipo) {
+            if (Number(tipo) === 1) return 'Administrador';
+            if (Number(tipo) === 2) return 'Fisioterapeuta';
+            if (Number(tipo) === 3) return 'Paciente';
+            return tipo || '';
+        }
+
+        async function cargar(q = '') {
+            try {
+                const d = await apiFetch('/api/usuarios' + (q ? `?query=${encodeURIComponent(q)}` : ''));
+
+                usuariosBody.innerHTML = (d.usuarios && d.usuarios.length)
+                    ? d.usuarios.map(u => `<tr>
+                        <td>${escapeHtml(u.nombre)} ${escapeHtml(u.apaterno)} ${escapeHtml(u.amaterno)}</td>
+                        <td>${escapeHtml(u.correo)}</td>
+                        <td>${escapeHtml(u.telefono)}</td>
+                        <td>${formatDate(u.fecha_nac)}</td>
+                        <td>${escapeHtml(tipoTexto(u.id_tipo_usuario))}</td>
+                        <td><a href="editar.html?id=${u.id_usuario}" class="btn btn-warning btn-sm">Editar</a></td>
+                    </tr>`).join('')
+                    : '<tr><td colspan="6" class="text-center text-muted">No se encontraron usuarios</td></tr>';
+            } catch (e) {
+                showAlert('alertBox', 'danger', e.message || 'Error al buscar');
+            }
+        }
+
+        searchForm.addEventListener('submit', e => {
+            e.preventDefault();
+            cargar(new FormData(searchForm).get('query') || '');
+        });
+
+        cargar()
+    </script>
 </body>
 
 </html>
