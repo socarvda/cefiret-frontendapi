@@ -86,9 +86,32 @@
                 "";
         }
 
+        function indicacionesRutina(rutina) {
+            const partes = [];
+
+            if (rutina.repeticiones) {
+                partes.push(`${escapeHtml(rutina.repeticiones)} repeticiones`);
+            }
+
+            if (rutina.series) {
+                partes.push(`${escapeHtml(rutina.series)} series`);
+            }
+
+            if (rutina.tiempo) {
+                partes.push(`${escapeHtml(rutina.tiempo)} min`);
+            }
+
+            return partes.length ? partes.join(" / ") : "No registrado";
+        }
+
         async function cargarRutinas() {
             try {
-                const data = await apiFetch(`/api/paciente/${idPaciente}/videos`);
+                /*
+                 * Importante:
+                 * Esta vista web usa /rutinas.
+                 * La app móvil sigue usando /videos.
+                 */
+                const data = await apiFetch(`/api/paciente/${idPaciente}/rutinas`);
                 const rutinas = normalizarRutinas(data);
 
                 if (rutinas.length === 0) {
@@ -112,6 +135,7 @@
                                     <th>Video</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 ${rutinas.map((rutina) => {
                                     const titulo = obtenerTituloRutina(rutina);
@@ -123,11 +147,7 @@
                                             <td>${formatDate(rutina.fecha || rutina.fecha_asignacion || "")}</td>
                                             <td>${escapeHtml(titulo)}</td>
                                             <td>${escapeHtml(descripcion)}</td>
-                                            <td>
-                                                ${rutina.repeticiones ? `${escapeHtml(rutina.repeticiones)} repeticiones` : ""}
-                                                ${rutina.series ? ` / ${escapeHtml(rutina.series)} series` : ""}
-                                                ${rutina.tiempo ? ` / ${escapeHtml(rutina.tiempo)} min` : ""}
-                                            </td>
+                                            <td>${indicacionesRutina(rutina)}</td>
                                             <td>
                                                 ${urlVideo ? `
                                                     <a href="${escapeHtml(urlVideo)}" target="_blank" class="btn btn-primary btn-sm">

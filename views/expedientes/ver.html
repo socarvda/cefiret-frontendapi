@@ -231,8 +231,8 @@
 
         async function cargarRutinas() {
             try {
-                const d = await apiFetch(`/api/paciente/${id}/videos`);
-                const rutinas = d.videos || [];
+                const d = await apiFetch(`/api/paciente/${id}/rutinas`);
+const rutinas = d.rutinas || [];
 
                 if (!rutinas.length) {
                     rutinasBox.innerHTML = `
