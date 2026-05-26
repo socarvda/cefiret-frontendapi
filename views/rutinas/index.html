@@ -98,7 +98,7 @@
                             <td>${escapeHtml(tituloVideo(r))}</td>
                             <td>
                                 <div class="d-flex gap-1 flex-wrap">
-                                    <a href="ver.html?id=${r.id_rutina}" class="btn btn-info btn-sm">Ver</a>
+                                    <a href="detalles.html?id=${r.id_rutina}" class="btn btn-info btn-sm">Ver</a>
                                     <a href="editar.html?id=${r.id_rutina}" class="btn btn-warning btn-sm">Editar</a>
                                     <a href="../progreso/reporte.html?id=${r.id_usuario || r.id_paciente || r.paciente_id}" class="btn btn-primary btn-sm">Progreso</a>
                                     <button class="btn btn-danger btn-sm" onclick="eliminar(${r.id_rutina})">Eliminar</button>
