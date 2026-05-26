@@ -21,12 +21,16 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h3>Reporte de progreso</h3>
-                    <p class="text-muted mb-0">Genera un PDF formal del avance del paciente.</p>
+                    <p class="text-muted mb-0">Consulta y registra avances del paciente.</p>
                 </div>
 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
+                    <button id="btnAbrirProgreso" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#progresoModal">
+                        Agregar progreso
+                    </button>
+
                     <button id="pdfBtn" class="btn btn-dark">Descargar PDF</button>
-                    <a id="volverLink" href="#" class="btn btn-secondary">Volver</a>
+                    <a id="volverLink" href="../rutinas/index.html" class="btn btn-secondary">Volver</a>
                 </div>
             </div>
 
@@ -44,6 +48,49 @@
         </main>
     </div>
 
+    <!-- Modal agregar progreso -->
+    <div class="modal fade" id="progresoModal" tabindex="-1" aria-labelledby="progresoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="progresoForm">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="progresoModalLabel">Agregar progreso</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="modalAlertBox"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Porcentaje de avance *</label>
+                            <input type="number" name="porcentaje" class="form-control" min="0" max="100" required
+                                placeholder="Ejemplo: 40">
+                            <div class="form-text">
+                                El nuevo porcentaje debe ser mayor al último registrado.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Comentarios</label>
+                            <textarea name="comentarios" class="form-control" rows="4"
+                                placeholder="Describe el avance del paciente..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit" class="btn btn-primary" id="guardarProgresoBtn">
+                            Guardar progreso
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -55,12 +102,40 @@
 
     <script>
         requireAuth();
+        protegerPaginaAdminOFisio();
         renderNavbar('rutinas');
 
         const idPaciente = getParam('id');
         let reporteData = null;
+        let rutinaPaciente = null;
 
-        document.getElementById('volverLink').href = `ver.html?id=${idPaciente}`;
+        const progresoForm = document.getElementById('progresoForm');
+        const guardarProgresoBtn = document.getElementById('guardarProgresoBtn');
+        const btnAbrirProgreso = document.getElementById('btnAbrirProgreso');
+
+        document.getElementById('volverLink').href = '../rutinas/index.html';
+
+        function textoVacio(valor) {
+            return valor ? escapeHtml(valor) : 'No registrado';
+        }
+
+        async function cargarRutinaPaciente() {
+            try {
+                const data = await apiFetch(`/api/progreso/paciente/${idPaciente}`);
+                rutinaPaciente = data.rutina || null;
+
+                if (!rutinaPaciente || !rutinaPaciente.id_rutina) {
+                    btnAbrirProgreso.disabled = true;
+                    btnAbrirProgreso.title = 'Este paciente no tiene una rutina asignada.';
+                } else {
+                    btnAbrirProgreso.disabled = false;
+                    btnAbrirProgreso.title = '';
+                }
+            } catch (error) {
+                rutinaPaciente = null;
+                btnAbrirProgreso.disabled = true;
+            }
+        }
 
         async function cargarReporte() {
             try {
@@ -71,58 +146,98 @@
                 const progresos = data.progresos || [];
 
                 document.getElementById('previewBox').innerHTML = `
-          <div class="row">
-            <div class="col-md-6">
-              <h5>Datos del paciente</h5>
-              <p><strong>Nombre:</strong> ${escapeHtml(paciente.nombre)} ${escapeHtml(paciente.apaterno)} ${escapeHtml(paciente.amaterno)}</p>
-              <p><strong>Correo:</strong> ${escapeHtml(paciente.correo || 'No disponible')}</p>
-              <p><strong>Teléfono:</strong> ${escapeHtml(paciente.telefono || 'No disponible')}</p>
-            </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Datos del paciente</h5>
+                            <p><strong>Nombre:</strong> ${escapeHtml(paciente.nombre)} ${escapeHtml(paciente.apaterno)} ${escapeHtml(paciente.amaterno)}</p>
+                            <p><strong>Correo:</strong> ${escapeHtml(paciente.correo || 'No disponible')}</p>
+                            <p><strong>Teléfono:</strong> ${escapeHtml(paciente.telefono || 'No disponible')}</p>
+                        </div>
 
-            <div class="col-md-6">
-              <h5>Resumen</h5>
-              <p><strong>Total de registros:</strong> ${data.totalRecords}</p>
-              <p><strong>Promedio de avance:</strong> ${Number(data.averageProgress || 0).toFixed(1)}%</p>
-              <p><strong>Fecha de generación:</strong> ${new Date().toLocaleDateString('es-MX')}</p>
-            </div>
-          </div>
+                        <div class="col-md-6">
+                            <h5>Resumen</h5>
+                            <p><strong>Total de registros:</strong> ${data.totalRecords}</p>
+                            <p><strong>Promedio de avance:</strong> ${Number(data.averageProgress || 0).toFixed(1)}%</p>
+                            <p><strong>Fecha de generación:</strong> ${new Date().toLocaleDateString('es-MX')}</p>
+                        </div>
+                    </div>
 
-          <hr>
+                    <hr>
 
-          <h5>Registros de avance</h5>
+                    <h5>Registros de avance</h5>
 
-          ${progresos.length
+                    ${progresos.length
                         ? `
-                <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Fecha</th>
-                        <th>Rutina / Video</th>
-                        <th>Porcentaje</th>
-                        <th>Comentarios</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${progresos.map(p => `
-                        <tr>
-                          <td>${formatDate(p.fecha_realizacion)}</td>
-                          <td>${escapeHtml(p.video_titulo || 'Sin video')}</td>
-                          <td>${p.porcentaje || 0}%</td>
-                          <td>${escapeHtml(p.comentarios || 'Sin comentarios')}</td>
-                        </tr>
-                      `).join('')}
-                    </tbody>
-                  </table>
-                </div>
-              `
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Rutina / Video</th>
+                                            <th>Porcentaje</th>
+                                            <th>Estado</th>
+                                            <th>Comentarios</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        ${progresos.map(p => `
+                                            <tr>
+                                                <td>${formatDate(p.fecha_realizacion)}</td>
+                                                <td>${escapeHtml(p.video_titulo || 'Sin video')}</td>
+                                                <td>${p.porcentaje || 0}%</td>
+                                                <td>${textoVacio(p.estado)}</td>
+                                                <td>${escapeHtml(p.comentarios || 'Sin comentarios')}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `
                         : `<p class="text-muted">No hay registros de progreso para este paciente.</p>`
                     }
-        `;
+                `;
             } catch (error) {
                 showAlert('alertBox', 'danger', error.message || 'No se pudo cargar el reporte.');
             }
         }
+
+        progresoForm.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            if (!rutinaPaciente || !rutinaPaciente.id_rutina) {
+                showAlert('modalAlertBox', 'danger', 'Este paciente no tiene una rutina asignada.');
+                return;
+            }
+
+            guardarProgresoBtn.disabled = true;
+            guardarProgresoBtn.textContent = 'Guardando...';
+
+            try {
+                const payload = formToObject(progresoForm);
+                payload.id_rutina = rutinaPaciente.id_rutina;
+
+                const data = await apiFetch('/api/progreso', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                progresoForm.reset();
+
+                const modal = bootstrap.Modal.getInstance(document.getElementById('progresoModal'));
+                modal.hide();
+
+                showAlert('alertBox', 'success', data.message || 'Progreso registrado correctamente.');
+
+                await cargarRutinaPaciente();
+                await cargarReporte();
+            } catch (error) {
+                showAlert('modalAlertBox', 'danger', error.message || 'No se pudo registrar el progreso.');
+            } finally {
+                guardarProgresoBtn.disabled = false;
+                guardarProgresoBtn.textContent = 'Guardar progreso';
+            }
+        });
 
         async function cargarLogoBase64() {
             try {
@@ -248,7 +363,12 @@
 
         document.getElementById('pdfBtn').addEventListener('click', generarPDF);
 
-        cargarReporte();
+        async function iniciar() {
+            await cargarRutinaPaciente();
+            await cargarReporte();
+        }
+
+        iniciar();
     </script>
 </body>
 
