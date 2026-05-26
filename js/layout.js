@@ -165,8 +165,7 @@ function renderNavbar(active = "") {
                         ? `
                         <div class="d-flex align-items-center gap-3">
                             <div class="dropdown">
-                                <button class="btn btn-outline-secondary btn-sm position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnNotificaciones">
-                                    <i class="bi bi-bell"></i>
+<button class="btn notification-btn btn-sm position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnNotificaciones">                                    <i class="bi bi-bell"></i>
                                     <span id="notificacionBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
                                         0
                                     </span>
@@ -294,9 +293,9 @@ async function cargarNotificaciones(mostrarCarga = true) {
                         ${
                           !leida
                             ? `
-                            <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="marcarNotificacionLeida(${Number(notificacion.id_notificacion)})">
-                                Leída
-                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="marcarNotificacionLeida(${Number(notificacion.id_notificacion)})">
+    Leída
+</button>
                         `
                             : ""
                         }

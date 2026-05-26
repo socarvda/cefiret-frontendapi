@@ -483,3 +483,227 @@ body {
     background-color: #C0392B !important;
     color: #FFFFFF !important;
 }
+
+/* =========================================================
+   PALETA CEFIRET PARA BOTONES Y ENCABEZADOS
+   ========================================================= */
+
+:root {
+    --cefiret-azul: #0D5A8E;
+    --cefiret-azul-hover: #0A4770;
+
+    --cefiret-azul-oscuro: #1A3A5C;
+    --cefiret-azul-oscuro-hover: #132B45;
+
+    --cefiret-teal: #0B6B75;
+    --cefiret-teal-hover: #084F57;
+
+    --cefiret-celeste: #E2EEF6;
+
+    --cefiret-amarillo: #F2B705;
+    --cefiret-amarillo-hover: #D9A404;
+
+    --cefiret-rojo: #C0392B;
+    --cefiret-rojo-hover: #A93226;
+}
+
+
+/* =========================================================
+   BOTONES DE ACCIÓN PRINCIPAL
+   Registrar usuario, buscar paciente, completar expediente,
+   agregar rutina, nueva cita, cobrar con Stripe, guardar, etc.
+   ========================================================= */
+
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-info {
+    background-color: var(--cefiret-azul) !important;
+    border-color: var(--cefiret-azul) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover {
+    background-color: var(--cefiret-azul-hover) !important;
+    border-color: var(--cefiret-azul-hover) !important;
+    color: #FFFFFF !important;
+}
+
+
+/* Botones de editar / advertencia */
+.btn-warning,
+.btn-outline-warning {
+    background-color: var(--cefiret-amarillo) !important;
+    border-color: var(--cefiret-amarillo) !important;
+    color: #1A1A1A !important;
+}
+
+.btn-warning:hover,
+.btn-outline-warning:hover {
+    background-color: var(--cefiret-amarillo-hover) !important;
+    border-color: var(--cefiret-amarillo-hover) !important;
+    color: #1A1A1A !important;
+}
+
+
+/* Botones de cancelar / regresar */
+.btn-secondary,
+.btn-outline-secondary {
+    background-color: var(--cefiret-azul-oscuro) !important;
+    border-color: var(--cefiret-azul-oscuro) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-secondary:hover,
+.btn-outline-secondary:hover {
+    background-color: var(--cefiret-azul-oscuro-hover) !important;
+    border-color: var(--cefiret-azul-oscuro-hover) !important;
+    color: #FFFFFF !important;
+}
+
+
+/* Botones de eliminar */
+.btn-danger,
+.btn-outline-danger {
+    background-color: var(--cefiret-rojo) !important;
+    border-color: var(--cefiret-rojo) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-danger:hover,
+.btn-outline-danger:hover {
+    background-color: var(--cefiret-rojo-hover) !important;
+    border-color: var(--cefiret-rojo-hover) !important;
+    color: #FFFFFF !important;
+}
+
+
+/* Botones claros dentro de headers */
+.btn-light {
+    background-color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+    color: var(--cefiret-azul) !important;
+    font-weight: 600;
+}
+
+.btn-light:hover {
+    background-color: var(--cefiret-celeste) !important;
+    border-color: var(--cefiret-celeste) !important;
+    color: var(--cefiret-azul-hover) !important;
+}
+
+
+/* =========================================================
+   HEADERS / ENCABEZADOS DE CARDS
+   Dashboard y completar expediente clínico
+   ========================================================= */
+
+/* bg-primary se queda como azul principal */
+.card-header.bg-primary,
+.bg-primary.text-white {
+    background-color: var(--cefiret-azul) !important;
+    color: #FFFFFF !important;
+}
+
+/* bg-info antes era celeste chillón */
+.card-header.bg-info,
+.bg-info.text-white {
+    background-color: var(--cefiret-teal) !important;
+    color: #FFFFFF !important;
+}
+
+/* bg-success antes era verde */
+.card-header.bg-success,
+.bg-success.text-white {
+    background-color: var(--cefiret-azul-oscuro) !important;
+    color: #FFFFFF !important;
+}
+
+/* bg-warning antes era amarillo muy fuerte */
+.card-header.bg-warning,
+.bg-warning.text-white,
+.card-header.bg-warning.text-dark,
+.bg-warning.text-dark {
+    background-color: var(--cefiret-teal) !important;
+    color: #FFFFFF !important;
+}
+
+/* Headers generales más limpios */
+.card-header {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+
+/* =========================================================
+   COMPLETAR EXPEDIENTE CLÍNICO
+   Datos generales, signos vitales, hábitos, vivienda
+   ========================================================= */
+
+.expediente-form-card .card-header,
+.consult-exp-card .card-header,
+.search-user-card .card-header {
+    background-color: var(--cefiret-azul) !important;
+    color: #FFFFFF !important;
+}
+
+/* Por si esos encabezados usan clases directas de Bootstrap */
+.card-header:has(+ .card-body) {
+    color: #FFFFFF;
+}
+
+
+/* =========================================================
+   CAMPANITA DE NOTIFICACIONES
+   ========================================================= */
+
+.notification-btn,
+#btnNotificaciones,
+#notificationBtn,
+#notificacionesBtn {
+    background-color: var(--cefiret-azul-oscuro) !important;
+    border-color: var(--cefiret-azul-oscuro) !important;
+    color: var(--cefiret-amarillo) !important;
+}
+
+.notification-btn:hover,
+#btnNotificaciones:hover,
+#notificationBtn:hover,
+#notificacionesBtn:hover {
+    background-color: var(--cefiret-azul) !important;
+    border-color: var(--cefiret-azul) !important;
+    color: var(--cefiret-amarillo) !important;
+}
+
+/* Icono de la campana */
+.notification-btn i,
+#btnNotificaciones i,
+#notificationBtn i,
+#notificacionesBtn i,
+.notification-btn .bi-bell,
+.notification-btn .bi-bell-fill,
+#btnNotificaciones .bi-bell,
+#btnNotificaciones .bi-bell-fill,
+#notificationBtn .bi-bell,
+#notificationBtn .bi-bell-fill,
+#notificacionesBtn .bi-bell,
+#notificacionesBtn .bi-bell-fill {
+    color: var(--cefiret-amarillo) !important;
+    font-size: 1.1rem;
+}
+
+/* Badge del número de notificaciones */
+.notification-badge,
+#notificationBadge,
+#notificacionesBadge,
+#badgeNotificaciones {
+    background-color: var(--cefiret-rojo) !important;
+    color: #FFFFFF !important;
+}
